@@ -75,4 +75,5 @@ export const MyComponent: React.FC = (props) => {
 
 ### 🎉 Inspired by:
 - https://github.com/garronej/tss-react
+- https://github.com/cssinjs/jss
 - https://github.com/mantinedev/mantine/tree/master/src/mantine-styles

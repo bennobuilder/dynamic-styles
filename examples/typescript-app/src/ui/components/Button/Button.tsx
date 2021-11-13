@@ -8,7 +8,7 @@ const Button: React.FC<ButtonProps> = (props) => {
   const { classes } = useStyles({ color, radius }, { styles, name: 'Button' });
 
   return (
-    <button type="button" className={classes.button} onClick={onClick}>
+    <button type="button" className={classes.root} onClick={onClick}>
       {color} button with {radius}px radius
     </button>
   );

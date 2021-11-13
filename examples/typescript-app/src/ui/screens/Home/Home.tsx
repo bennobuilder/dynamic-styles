@@ -18,7 +18,7 @@ const Home: React.FC = () => {
       <Button
         onClick={() => setToggled(!toggled)}
         styles={{
-          button: css`
+          root: css`
             background: rebeccapurple;
           `,
         }}

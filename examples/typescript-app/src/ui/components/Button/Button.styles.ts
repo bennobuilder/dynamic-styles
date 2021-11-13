@@ -2,7 +2,7 @@ import createStyles from '../../../theme';
 import { ExtractStylesType } from 'create-styles';
 
 const useStyles = createStyles<ButtonStyles>()((theme, { color, radius }) => ({
-  button: {
+  root: {
     color: theme.colors.white,
     backgroundColor: color,
     borderRadius: radius,
