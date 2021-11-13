@@ -6,14 +6,16 @@
   "homepage": "https://github.com/bennodev19/emotion-create-styles",
   "author": "BennoDev <bennodev19@gmail.com>",
   "keywords": [
+    "react",
     "emotion",
+    "emotionjs",
     "styles"
   ],
   "main": "dist/index.js",
   "module": "dist/esm/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
-    "build": "shx rm -rf dist && rollup --c rollup.config.js",
+    "build": "shx rm -rf dist && rollup --c config/rollup/rollup.config.js",
     "prepare": "yarn run build"
   },
   "dependencies": {

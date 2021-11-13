@@ -1,8 +1,6 @@
 import { Interpolation, SerializedStyles } from '@emotion/react';
-import { useCss, CXType } from './hooks/useCss';
-import { MapToX } from '../types';
-import { stylePrefix } from './config';
-import { AgileTheme, useAgileTheme } from '../theme';
+import { CXType, useCss } from './hooks/useCss';
+import { STYLE_PREFIX } from './config';
 
 /**
  * Helper method to merge the specified classes
@@ -29,83 +27,89 @@ function mergeClassNames<T extends Record<string, string>>(
       // To have a readable 'static selector' for styling with e.g. scss.
       // This class name has initially no styling applied.
       // e.g. 'prefix-text-root' or 'prefix-button-container'
-      name ? `${stylePrefix}-${name}-${classKey}` : null
+      name ? `${STYLE_PREFIX}-${name}-${classKey}` : null
     );
   }
 
   return mergedClasses as any;
 }
 
-// Double method due to partial type inference
-// https://stackoverflow.com/questions/63678306/typescript-partial-type-inference
-export const createStyles =
-  <TParams extends Object = Object>() =>
-  /**
-   * Transfers the (in object shape or emotion style) specified styles
-   * into the returned 'useStyles()' hook.
-   *
-   * The 'useStyles()' hook should be used in React components
-   * where the styles are to be used in.
-   * It provides the specified styles mapped to class names
-   * and some handy utilities for working with these class names.
-   *
-   * @param styles - Styles to be passed to the returned 'useStyles()' hook and converted to class names.
-   */
-  <TStyles extends StylesData = StylesData>(
-    styles: StylesType<TParams, TStyles>
-  ): UseStylesType<TParams, TStyles> => {
-    const getStyles = typeof styles === 'function' ? styles : () => styles;
-
+export function makeCreateStyles<TTheme>({
+  useTheme,
+}: {
+  useTheme: () => TTheme;
+}) {
+  // Double method ('createStyle()()') due to partial type inference of TStyles
+  // https://stackoverflow.com/questions/63678306/typescript-partial-type-inference
+  return <
+      TParams extends Record<string, unknown> = Record<string, unknown>
+    >() =>
     /**
-     * Hook for accessing the generated class names
-     * based on the styles created in 'createStyles()'.
+     * Transfers the (in object shape or emotion style) specified styles
+     * into the returned 'useStyles()' hook.
      *
-     * @param params - Parameters to be passed to the style creation ('createStyles()') method.
-     * @param config - Configuration object
-     */
-    return (params, config = {}) => {
-      config = { name: undefined, styles: {}, classNames: {}, ...config };
+     * The 'useStyles()' hook should be used in React components
+     * where the styles are to be used in.
+     * It provides the specified styles mapped to class names
+     * and some handy utilities for working with these class names.
+     *
+     * @param styles - Styles to be passed to the returned 'useStyles()' hook and converted to class names.
+     */ <TStyles extends StylesData = StylesData>(
+      styles: StylesType<TParams, TStyles, TTheme>
+    ): UseStylesType<TParams, TStyles, TTheme> => {
+      const getStyles = typeof styles === 'function' ? styles : () => styles;
 
-      const theme = useAgileTheme();
-      const { css, cx } = useCss();
-      const _styles = getStyles(theme, params as any);
-      const _expandedStyles = (
-        typeof config.styles === 'function'
-          ? config.styles(theme)
-          : config.styles
-      ) as Partial<TStyles>;
+      /**
+       * Hook for accessing the generated class names
+       * based on the styles created in 'createStyles()'.
+       *
+       * @param params - Parameters to be passed to the style creation ('createStyles()') method.
+       * @param config - Configuration object
+       */
+      return (params, config = {}) => {
+        config = { name: undefined, styles: {}, classNames: {}, ...config };
 
-      // Transform specified 'styles' into classes
-      const classes: Record<string, string> = {};
-      for (const key of Object.keys(_styles)) {
-        classes[key] =
-          typeof _styles[key] !== 'string'
-            ? css(_styles[key])
-            : (_styles[key] as any);
-      }
+        const theme = useTheme();
+        const { css, cx } = useCss();
+        const _styles = getStyles(theme, params as any);
+        const _expandedStyles = (
+          typeof config.styles === 'function'
+            ? config.styles(theme)
+            : config.styles
+        ) as Partial<TStyles>;
 
-      // Transform specified 'expandedStyles' into classes and merge them with the 'classNames'
-      const expandedClasses: Record<string, string> = {};
-      for (const key of Object.keys(_expandedStyles)) {
-        expandedClasses[key] = cx(
-          typeof _expandedStyles[key] !== 'string'
-            ? css(_expandedStyles[key])
-            : _expandedStyles[key],
-          config.classNames
-        );
-      }
+        // Transform specified 'styles' into classes
+        const classes: Record<string, string> = {};
+        for (const key of Object.keys(_styles)) {
+          classes[key] =
+            typeof _styles[key] !== 'string'
+              ? css(_styles[key])
+              : (_styles[key] as any);
+        }
 
-      return {
-        classes: mergeClassNames<MapToX<TStyles, string>>(
-          classes as any,
-          expandedClasses as any,
+        // Transform specified 'expandedStyles' into classes and merge them with the 'classNames'
+        const expandedClasses: Record<string, string> = {};
+        for (const key of Object.keys(_expandedStyles)) {
+          expandedClasses[key] = cx(
+            typeof _expandedStyles[key] !== 'string'
+              ? css(_expandedStyles[key])
+              : _expandedStyles[key],
+            config.classNames
+          );
+        }
+
+        return {
+          classes: mergeClassNames<MapToX<TStyles, string>>(
+            classes as any,
+            expandedClasses as any,
+            cx,
+            config.name
+          ),
           cx,
-          config.name
-        ),
-        cx,
+        };
       };
     };
-  };
+}
 
 export type StyleItem =
   | SerializedStyles // to do emotion based 'css' styles
@@ -114,20 +118,22 @@ export type StyleItem =
 
 export type StylesData = Record<string, StyleItem>;
 
-type StylesType<TParams extends Object, TStyles extends StylesData> =
-  | TStyles
-  | ((theme: AgileTheme, params: TParams) => TStyles);
+type StylesType<
+  TParams extends Record<string, unknown>,
+  TStyles extends StylesData,
+  TTheme
+> = TStyles | ((theme: TTheme, params: TParams) => TStyles);
 
-export type ExtendedStylesType<TStyles extends StylesData> =
+export type ExtendedStylesType<TStyles extends StylesData, TTheme> =
   | Partial<MapToX<TStyles, StyleItem>>
-  | ((theme: AgileTheme) => Partial<MapToX<TStyles, StyleItem>>);
+  | ((theme: TTheme) => Partial<MapToX<TStyles, StyleItem>>);
 
-type UseStylesConfigType<TStyles extends StylesData> = {
+type UseStylesConfigType<TStyles extends StylesData, TTheme> = {
   /**
    * Styles keymap to extend the styles specified in the 'createStyles()' method.
    * @default {}
    */
-  styles?: ExtendedStylesType<TStyles>;
+  styles?: ExtendedStylesType<TStyles, TTheme>;
   /**
    * ClassNames keymap to extend the styles specified in the 'createStyles()' method.
    *
@@ -168,17 +174,22 @@ type UseStylesReturnType<TStyles extends StylesData> = {
 };
 
 export type UseStylesType<
-  TParams extends Object,
+  TParams extends Record<string, unknown>,
   TStyles extends StylesData,
-  TConfig extends UseStylesConfigType<TStyles> = UseStylesConfigType<TStyles>
+  TTheme,
+  TConfig extends UseStylesConfigType<TStyles, TTheme> = UseStylesConfigType<
+    TStyles,
+    TTheme
+  >
 > = (params?: TParams, config?: TConfig) => UseStylesReturnType<TStyles>;
 
 export type ExtractStylesType<T> = T extends UseStylesType<
-  infer P,
-  infer S,
-  infer C
+  infer TParams,
+  infer TStyles,
+  infer TTheme,
+  infer TConfig
 >
-  ? C['styles']
+  ? TConfig['styles']
   : never;
 
 export type MapToX<T, X = any> = {

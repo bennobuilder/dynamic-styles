@@ -1,10 +1,10 @@
-import React from 'react';
 import clsx from 'clsx';
 import { StyleItem } from '../createStyles';
 import { serializeStyles, RegisteredCache } from '@emotion/serialize';
 import { insertStyles, getRegisteredStyles } from '@emotion/utils';
 import type { EmotionCache } from '@emotion/cache';
 import { useCache } from './useCache';
+import { useGuaranteedMemo } from './useGuaranteedMemo';
 
 // Inspired by
 // https://emotion.sh/docs/class-names
@@ -80,7 +80,7 @@ const { cssFactory } = (() => {
  */
 export function useCss() {
   const cache = useCache();
-  return React.useMemo(() => cssFactory(cache), [cache]);
+  return useGuaranteedMemo(() => cssFactory(cache), [cache]);
 }
 
 export type CSSType = (styles: StyleItem[] | StyleItem) => string;

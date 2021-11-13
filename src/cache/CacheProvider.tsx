@@ -6,12 +6,12 @@ interface CacheProviderProps {
   children: React.ReactNode;
 }
 
-export const cacheContext = React.createContext<EmotionCache | null>(null);
+export const CacheContext = React.createContext<EmotionCache | null>(null);
 
 const CacheProvider: React.FC<CacheProviderProps> = (props) => {
   const { children, value } = props;
   return (
-    <cacheContext.Provider value={value}>{children}</cacheContext.Provider>
+    <CacheContext.Provider value={value}>{children}</CacheContext.Provider>
   );
 };
 

@@ -1,10 +1,10 @@
 import CacheProvider from './CacheProvider';
 import createCache, { EmotionCache, Options } from '@emotion/cache';
-import { stylePrefix } from '../config';
+import { STYLE_PREFIX } from '../config';
 
 export const { getCache } = (() => {
   let cache: EmotionCache;
-  const cacheKey = stylePrefix;
+  const cacheKey = STYLE_PREFIX;
 
   /**
    * Returns the existing cache or creates a new one

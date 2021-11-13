@@ -1,1 +1,1 @@
-export const stylePrefix = 'uil';
+export const STYLE_PREFIX = 'uil';
