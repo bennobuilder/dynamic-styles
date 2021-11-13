@@ -1,16 +1,19 @@
 import { css } from '@emotion/react';
-import { createStyles } from '../../../styles';
+import { createStyles } from '../../../theme';
 
 export const useStyles = createStyles<HomeStyles>()((theme, params) => ({
   root: css`
     display: flex;
-    flex: 1;
-    background: ${theme.colors.red};
+    height: 100vh;
+    flex-direction: column;
+    background: ${params.toggled ? theme.colors.white : theme.colors.red};
+    align-items: center;
+    justify-content: center;
   `,
   text: {
     fontWeight: 'bold',
     fontSize: '100px',
-    color: theme.colors.green,
+    color: params.toggled ? 'black' : theme.colors.green,
   },
 }));
 

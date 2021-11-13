@@ -1,12 +1,28 @@
 import React from 'react';
 import useStyles from './Home.styles';
+import Button from '../../components/Button';
+import { css } from '@emotion/react';
 
 const Home: React.FC = () => {
-  const { classes } = useStyles();
+  const [toggled, setToggled] = React.useState(false);
+  const { classes } = useStyles({ toggled });
 
   return (
     <div className={classes.root}>
       <p className={classes.text}>Hello world</p>
+      <Button
+        color={'#4f5be8'}
+        radius={20}
+        onClick={() => setToggled(!toggled)}
+      />
+      <Button
+        onClick={() => setToggled(!toggled)}
+        styles={{
+          button: css`
+            background: rebeccapurple;
+          `,
+        }}
+      />
     </div>
   );
 };
