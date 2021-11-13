@@ -17,7 +17,7 @@
 $ yarn add create-styles
 ```
 
-###### ⛳️ Sandbox
+### ⛳️ Sandbox
 https://codesandbox.io/s/emotion-create-styles-byu6s?file=/src/theme.ts
 
 ## ⏳ Quick Start
