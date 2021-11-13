@@ -34,11 +34,7 @@ function mergeClassNames<T extends Record<string, string>>(
   return mergedClasses as any;
 }
 
-export function makeCreateStyles<TTheme>({
-  useTheme,
-}: {
-  useTheme: () => TTheme;
-}) {
+export function makeCreateStyles<TTheme>(useTheme: () => TTheme) {
   // Double method ('createStyle()()') due to partial type inference of TStyles
   // https://stackoverflow.com/questions/63678306/typescript-partial-type-inference
   return <

@@ -1,5 +1,5 @@
 {
-  "name": "emotion-create-styles",
+  "name": "create-styles",
   "version": "0.0.1",
   "description": "Css-in-js styles engine, based on emotion",
   "license": "MIT",
