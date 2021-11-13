@@ -1,6 +1,6 @@
 import { makeCreateStyles } from 'create-styles';
 
-type Theme = {
+export type Theme = {
   colors: {
     white: string;
     red: string;

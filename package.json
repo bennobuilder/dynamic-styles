@@ -1,7 +1,7 @@
 {
   "name": "create-styles",
   "version": "0.0.1",
-  "description": "Css-in-js styles engine, based on emotion",
+  "description": "Css-in-Js styles engine, based on Emotion",
   "license": "MIT",
   "homepage": "https://github.com/bennodev19/emotion-create-styles",
   "author": "BennoDev <bennodev19@gmail.com>",
@@ -9,7 +9,10 @@
     "react",
     "emotion",
     "emotionjs",
-    "styles"
+    "styles",
+    "css",
+    "tss",
+    "jss"
   ],
   "main": "dist/index.js",
   "module": "dist/esm/index.js",
