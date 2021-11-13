@@ -27,5 +27,4 @@ sync.js
 src/*.js
 src/*.js.map
 *.tgz
-cache
 dist
