@@ -1,3 +1,4 @@
+import React from 'react';
 import { Interpolation, SerializedStyles } from '@emotion/react';
 import { useCss } from './hooks/useCss';
 import { STYLE_PREFIX } from './config';
@@ -64,12 +65,13 @@ export function makeCreateStyles<TTheme>(useTheme: () => TTheme) {
       return (params, config = {}) => {
         const styles = config.styles ?? {};
         const classNames = config.classNames ?? {};
+        const name = config.name;
 
         let count = 0;
-        // Method to create a ref in 'createStyles'
+        // Method to create a static selector that can be referenced
         function createRef(refName: string) {
           count += 1;
-          return `${STYLE_PREFIX}-ref_${refName || ''}_${count}`;
+          return `${STYLE_PREFIX}-ref_${refName ?? 'unknown'}_${count}`;
         }
 
         const theme = useTheme();
@@ -79,36 +81,38 @@ export function makeCreateStyles<TTheme>(useTheme: () => TTheme) {
           typeof styles === 'function' ? styles(theme) : styles
         ) as Partial<TStyles>;
 
-        // Transform specified 'styles' into classes
-        const classes: Record<string, string> = {};
-        for (const key of Object.keys(_styles)) {
-          classes[key] =
-            typeof _styles[key] !== 'string'
-              ? css(_styles[key])
-              : (_styles[key] as any);
-        }
+        return React.useMemo(() => {
+          // Transform specified 'styles' into classes
+          const classes: Record<string, string> = {};
+          for (const key of Object.keys(_styles)) {
+            classes[key] =
+              typeof _styles[key] !== 'string'
+                ? css(_styles[key])
+                : (_styles[key] as any);
+          }
 
-        // Transform '_expandedStyles' into classes and merge them with the specified 'classNames'
-        const expandedClasses: Record<string, string> = {};
-        for (const key of Object.keys(_expandedStyles)) {
-          expandedClasses[key] = cx(
-            typeof _expandedStyles[key] !== 'string'
-              ? css(_expandedStyles[key])
-              : _expandedStyles[key],
-            classNames
-          );
-        }
+          // Transform '_expandedStyles' into classes and merge them with the specified 'classNames'
+          const expandedClasses: Record<string, string> = {};
+          for (const key of Object.keys(_expandedStyles)) {
+            expandedClasses[key] = cx(
+              typeof _expandedStyles[key] !== 'string'
+                ? css(_expandedStyles[key])
+                : _expandedStyles[key],
+              classNames
+            );
+          }
 
-        return {
-          classes: mergeClassNames<MapToX<TStyles, string>>(
-            classes as any,
-            expandedClasses as any,
+          return {
+            classes: mergeClassNames<MapToX<TStyles, string>>(
+              classes as any,
+              expandedClasses as any,
+              cx,
+              name
+            ),
             cx,
-            config.name
-          ),
-          cx,
-          theme,
-        };
+            theme,
+          };
+        }, [_styles, _expandedStyles, classNames, name, css, cx]);
       };
     };
 }
