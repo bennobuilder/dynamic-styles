@@ -11,7 +11,12 @@ import { StyleItem } from '../createStyles';
 export const { cssFactory } = (() => {
   const refPropertyName = 'ref';
 
-  // Tries to extract the 'ref' property from the specified argument.
+  /**
+   * Tries to extract the 'ref' property from the specified argument.
+   *
+   * @param arg - Argument to extract the 'ref' property from.
+   * @return {arg, ref} - Returns the extracted reference ('ref') and the specified argument 'arg' with the 'ref' property removed.
+   */
   function extractRef(arg: any) {
     let ref: string | null = null;
 
@@ -65,14 +70,14 @@ export const { cssFactory } = (() => {
       const refs: string[] = [];
       const _styles: StyleItem[] = [];
 
-      // Extract static selectors ('ref') from style objects
+      // Extract static selector/s ('ref' property) from style object/s
       for (const style of styles) {
         const { ref, arg } = extractRef(style);
         if (ref != null) refs.push(ref);
         if (arg != null) _styles.push(arg);
       }
 
-      // Serialize specified styles to one 'SerializedStyle'
+      // Serialize specified styles to one processable 'SerializedStyle'
       const serialized = serializeStyles(_styles, cache.registered);
 
       // Insert serialized style into the emotion cache

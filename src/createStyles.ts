@@ -68,15 +68,20 @@ export function makeCreateStyles<TTheme>(useTheme: () => TTheme) {
         const name = config.name;
 
         let count = 0;
-        // Method to create a static selector that can be referenced
+        // Creates a static selector that can be referenced.
         function createRef(refName: string) {
           count += 1;
           return `${STYLE_PREFIX}-ref_${refName ?? 'unknown'}_${count}`;
         }
 
+        // Assigns the specified reference ('refName') to the style instance ('style').
+        function assignRef(refName: string, style: StyleItem): string {
+          return cx(refName, css(style));
+        }
+
         const theme = useTheme();
         const { css, cx } = useCss();
-        const _styles = getStyles(theme, params, createRef);
+        const _styles = getStyles({ theme, params, createRef, assignRef });
         const _expandedStyles = (
           typeof styles === 'function' ? styles(theme) : styles
         ) as Partial<TStyles>;
@@ -130,11 +135,12 @@ type StylesType<
   TTheme
 > =
   | TStyles
-  | ((
-      theme: TTheme,
-      params: TParams,
-      createRef: (refName: string) => string
-    ) => TStyles);
+  | ((props: {
+      theme: TTheme;
+      params: TParams;
+      createRef: (refName: string) => string;
+      assignRef: (refName: string, style: StyleItem) => string;
+    }) => TStyles);
 
 export type ExtendedStylesType<TStyles extends StylesData, TTheme> =
   | Partial<MapToX<TStyles, StyleItem>>
