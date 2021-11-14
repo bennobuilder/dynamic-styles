@@ -19,9 +19,14 @@
   "types": "dist/index.d.ts",
   "scripts": {
     "build": "shx rm -rf dist && rollup --c config/rollup/rollup.config.js",
+    "dev:publish": "yalc publish",
+    "dev:push": "yalc push",
+    "watch:push": "tsc-watch --onSuccess \"yarn run dev:push\"",
     "prepare": "yarn run build",
     "pack": "npm pack",
-    "test": "jest"
+    "test": "jest",
+    "lint": "eslint src/**/*",
+    "install:clean": "shx rm -rf dist && shx rm -rf node_modules && yarn install"
   },
   "dependencies": {
     "clsx": "^1.1.1"
@@ -31,8 +36,7 @@
     "@emotion/react": "^11.5.0",
     "@emotion/serialize": "^1.0.2",
     "@emotion/utils": "^1.0.0",
-    "react": ">=16.8.0",
-    "react-dom": ">=16.8.0"
+    "react": ">=16.8.0"
   },
   "devDependencies": {
     "@babel/cli": "^7.16.0",
