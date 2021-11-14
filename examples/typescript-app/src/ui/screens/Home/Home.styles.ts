@@ -24,8 +24,6 @@ export const useStyles = createStyles<HomeStyles>()(
     // create reference
     const text = createRef('text');
 
-    console.log('Text', text);
-
     return {
       root: css`
         display: flex;
