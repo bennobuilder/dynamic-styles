@@ -1,3 +1,10 @@
+### 0.0.5
+
+- Added `assignRef` method
+
+### 0.0.4
+- Fixed default export
+
 ### 0.0.3
 - Added `ref` support
 - small refactoring

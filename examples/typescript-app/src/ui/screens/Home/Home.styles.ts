@@ -20,11 +20,9 @@ const bounce = keyframes`
 `;
 
 export const useStyles = createStyles<HomeStyles>()(
-  (theme, params, createRef) => {
+  ({ theme, params, createRef, assignRef }) => {
     // create reference
     const text = createRef('text');
-
-    console.log('Text', text);
 
     return {
       root: css`
@@ -41,15 +39,21 @@ export const useStyles = createStyles<HomeStyles>()(
           background: rebeccapurple;
         }
       `,
-      text: {
-        // assign reference to selector
-        ref: text,
-
-        // and add any other properties
+      // text: {
+      //   // assign reference to selector
+      //   ref: text,
+      //
+      //   // and add any other properties
+      //   fontWeight: 'bold',
+      //   fontSize: '100px',
+      //   color: params.toggled ? 'black' : theme.colors.green,
+      // },
+      // or
+      text: assignRef(text, {
         fontWeight: 'bold',
         fontSize: '100px',
         color: params.toggled ? 'black' : theme.colors.green,
-      },
+      }),
       bounce: css`
         animation: ${bounce} 1s ease infinite;
       `,

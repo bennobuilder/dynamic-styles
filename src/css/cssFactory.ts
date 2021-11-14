@@ -11,18 +11,18 @@ import { StyleItem } from '../createStyles';
 export const { cssFactory } = (() => {
   const refPropertyName = 'ref';
 
-  function extractRef(args: any[]) {
+  /**
+   * Tries to extract the 'ref' property from the specified argument.
+   *
+   * @param arg - Argument to extract the 'ref' property from.
+   * @return {arg, ref} - Returns the extracted reference ('ref') and the specified argument 'arg' with the 'ref' property removed.
+   */
+  function extractRef(arg: any) {
     let ref: string | null = null;
 
-    if (args.length !== 1) {
-      return { args, ref };
-    }
-
-    const [arg] = args;
-
-    // Check if 'ref' property is included in arg
+    // Check if 'ref' property is included in arg instance
     if (!(arg instanceof Object) || !(refPropertyName in arg)) {
-      return { args, ref };
+      return { arg, ref };
     }
 
     // Extract and remove 'ref' property of the arg object
@@ -30,10 +30,10 @@ export const { cssFactory } = (() => {
     const argCopy = { ...arg };
     delete argCopy[refPropertyName];
 
-    return { args: [argCopy], ref };
+    return { arg: argCopy, ref };
   }
 
-  // Merges the specified 'classNames' into the cached class names
+  // Merges the specified 'classNames' into the cached class names.
   // https://github.dev/emotion-js/emotion/blob/9861a18bbf4a9480fad7f21a833ddfcf814cc893/packages/react/src/class-names.js#L64
   function merge(
     registeredCache: RegisteredCache,
@@ -67,15 +67,25 @@ export const { cssFactory } = (() => {
      * @param styles - Styles to be converted into a class name
      */
     const css: CSSType = (...styles) => {
-      const { ref, args } = extractRef(styles);
+      const refs: string[] = [];
+      const _styles: StyleItem[] = [];
 
-      // Serialize specified styles to one 'SerializedStyle'
-      const serialized = serializeStyles(args, cache.registered);
+      // Extract static selector/s ('ref' property) from style object/s
+      for (const style of styles) {
+        const { ref, arg } = extractRef(style);
+        if (ref != null) refs.push(ref);
+        if (arg != null) _styles.push(arg);
+      }
+
+      // Serialize specified styles to one processable 'SerializedStyle'
+      const serialized = serializeStyles(_styles, cache.registered);
 
       // Insert serialized style into the emotion cache
       insertStyles(cache, serialized, false);
 
-      return `${cache.key}-${serialized.name}${ref == null ? '' : ` ${ref}`}`;
+      return `${cache.key}-${serialized.name}${
+        refs.length > 0 ? refs.map((ref) => ` ${ref}`) : ''
+      }`;
     };
 
     /**

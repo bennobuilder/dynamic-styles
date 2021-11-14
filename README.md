@@ -19,7 +19,7 @@ Create dynamic style sheets and link them to functional components using the Rea
 - ✅ Server side rendering support: Next.js, Gatsby or any other environment
 - ✅ `@emotion` cache support
 ```tsx
-const useStyles = createStyles()((theme, params) => ({
+const useStyles = createStyles()(({theme, params}) => ({
     root: /* */,
     container: /* */,
     text: /* */,
@@ -90,7 +90,7 @@ type MyComponentStyles = { color: "red" | "blue", fontSize: number }
 // Specify dynamic styles and access them later with the returned 'useStyles()' hook.
 // (Note: Double method ('createStyle()()') due to partial type inference of 'TStyles')
 const useStyles = createStyles<MyComponentStyles>()(
-    (theme, params) => ({
+    ({theme, params}) => ({
         // The styles of the specified classes can be created with a css object 
         root: {
             backgroundColor: params.color,
@@ -137,7 +137,7 @@ Subsequent styles overwrite property values of previous styles.
 import React from 'react';
 import { createStyles } from "./styles";
 
-const useStyles = createStyles((theme) => ({
+const useStyles = createStyles(({theme}) => ({
   button: {
     backgroundColor: theme.colors.darkBlue,
     border: 0,
@@ -193,22 +193,34 @@ The `createStyles()` method receives the `createRef()` method to handle the crea
 import React from 'react';
 import { createStyles } from "./styles";
 
-const useStyles = createStyles((theme, params, createRef) => {
+const useStyles = createStyles(({theme, params, createRef, assignRef}) => {
   // Create reference for future use
   const button = createRef('button'); // Returns a static selector (e.g. 'prefix-ref_button_1')
 
   return {
+    // Assign ref variant 1:
     button: {
-      // Assign reference to the selector via the 'ref' property
+      // Assign the reference to the selector via the 'ref' property
       ref: button,
 
-      // and add any other properties
+      // and add any other style properties
       backgroundColor: theme.colors.blue,
       color: theme.colors.white,
       padding: `10px 20px`,
       borderRadius: 5,
       cursor: 'pointer',
     },
+      
+    // Assign ref variant 2:
+    // Assign the reference to the selector via the 'assignRef()' method
+    button2: assignRef(button, {
+        // and add any other style properties
+        backgroundColor: theme.colors.blue,
+        color: theme.colors.white,
+        padding: `10px 20px`,
+        borderRadius: 5,
+        cursor: 'pointer',
+    }),
 
     container: {
       display: 'flex',
@@ -265,7 +277,7 @@ const bounce = keyframes`
   }
 `
 
-const useStyles = createStyles((theme) => ({
+const useStyles = createStyles(({theme}) => ({
   container: {
     textAlign: 'center',
     // Use specified 'bounce' keyframes in the 'container' styles  
@@ -338,7 +350,7 @@ Create `Button` component.
 import React from 'react';
 import { createStyles } from "./styles";
 
-const useStyles = createStyles<ButtonStyles>()((theme, { color, radius }) => ({
+const useStyles = createStyles<ButtonStyles>()(({theme, params: { color, radius }}) => ({
     root: {
         color: theme.colors.white,
         backgroundColor: color,
@@ -413,7 +425,9 @@ const MyComponent: React.FC = () => {
 
 ---
 
-## FAQ
+<br/>
+
+## ❓ FAQ
 
 <details>
   <summary>Click to expand</summary>

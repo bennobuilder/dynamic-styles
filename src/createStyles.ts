@@ -1,3 +1,4 @@
+import React from 'react';
 import { Interpolation, SerializedStyles } from '@emotion/react';
 import { useCss } from './hooks/useCss';
 import { STYLE_PREFIX } from './config';
@@ -64,51 +65,59 @@ export function makeCreateStyles<TTheme>(useTheme: () => TTheme) {
       return (params, config = {}) => {
         const styles = config.styles ?? {};
         const classNames = config.classNames ?? {};
+        const name = config.name;
 
         let count = 0;
-        // Method to create a ref in 'createStyles'
+        // Creates a static selector that can be referenced.
         function createRef(refName: string) {
           count += 1;
-          return `${STYLE_PREFIX}-ref_${refName || ''}_${count}`;
+          return `${STYLE_PREFIX}-ref_${refName ?? 'unknown'}_${count}`;
+        }
+
+        // Assigns the specified reference ('refName') to the style instance ('style').
+        function assignRef(refName: string, style: StyleItem): string {
+          return cx(refName, css(style));
         }
 
         const theme = useTheme();
         const { css, cx } = useCss();
-        const _styles = getStyles(theme, params, createRef);
+        const _styles = getStyles({ theme, params, createRef, assignRef });
         const _expandedStyles = (
           typeof styles === 'function' ? styles(theme) : styles
         ) as Partial<TStyles>;
 
-        // Transform specified 'styles' into classes
-        const classes: Record<string, string> = {};
-        for (const key of Object.keys(_styles)) {
-          classes[key] =
-            typeof _styles[key] !== 'string'
-              ? css(_styles[key])
-              : (_styles[key] as any);
-        }
+        return React.useMemo(() => {
+          // Transform specified 'styles' into classes
+          const classes: Record<string, string> = {};
+          for (const key of Object.keys(_styles)) {
+            classes[key] =
+              typeof _styles[key] !== 'string'
+                ? css(_styles[key])
+                : (_styles[key] as any);
+          }
 
-        // Transform '_expandedStyles' into classes and merge them with the specified 'classNames'
-        const expandedClasses: Record<string, string> = {};
-        for (const key of Object.keys(_expandedStyles)) {
-          expandedClasses[key] = cx(
-            typeof _expandedStyles[key] !== 'string'
-              ? css(_expandedStyles[key])
-              : _expandedStyles[key],
-            classNames
-          );
-        }
+          // Transform '_expandedStyles' into classes and merge them with the specified 'classNames'
+          const expandedClasses: Record<string, string> = {};
+          for (const key of Object.keys(_expandedStyles)) {
+            expandedClasses[key] = cx(
+              typeof _expandedStyles[key] !== 'string'
+                ? css(_expandedStyles[key])
+                : _expandedStyles[key],
+              classNames
+            );
+          }
 
-        return {
-          classes: mergeClassNames<MapToX<TStyles, string>>(
-            classes as any,
-            expandedClasses as any,
+          return {
+            classes: mergeClassNames<MapToX<TStyles, string>>(
+              classes as any,
+              expandedClasses as any,
+              cx,
+              name
+            ),
             cx,
-            config.name
-          ),
-          cx,
-          theme,
-        };
+            theme,
+          };
+        }, [_styles, _expandedStyles, classNames, name, css, cx]);
       };
     };
 }
@@ -126,11 +135,12 @@ type StylesType<
   TTheme
 > =
   | TStyles
-  | ((
-      theme: TTheme,
-      params: TParams,
-      createRef: (refName: string) => string
-    ) => TStyles);
+  | ((props: {
+      theme: TTheme;
+      params: TParams;
+      createRef: (refName: string) => string;
+      assignRef: (refName: string, style: StyleItem) => string;
+    }) => TStyles);
 
 export type ExtendedStylesType<TStyles extends StylesData, TTheme> =
   | Partial<MapToX<TStyles, StyleItem>>
