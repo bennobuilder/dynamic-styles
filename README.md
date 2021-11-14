@@ -1,4 +1,6 @@
 # 🖼 Create Styles
+
+<img src="https://raw.githubusercontent.com/bennodev19/emotion-create-styles/develop/static/banner.png" alt="Banner">
 <div>
     <i>✨ Css-in-Js styles engine, based on Emotion</i>
     <br>
@@ -21,8 +23,8 @@ const useStyles = createStyles()((theme, params) => ({
 
 - ✅ Fully featured TypeScript support
 - ✅ Build on top of [`@emotion/react`](https://emotion.sh/docs/@emotion/react): As fast and lightweight as emotion
-- ✅ Server side rendering support: Next.js, Gatsby or any other environment
 - ✅ Supports all emotion features: lazy evaluation, dynamic theming, etc.
+- ✅ Server side rendering support: Next.js, Gatsby or any other environment
 - ✅ `@emotion` cache support
 
 ### 💻 Installation
