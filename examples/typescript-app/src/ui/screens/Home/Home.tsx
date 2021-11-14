@@ -9,7 +9,7 @@ const Home: React.FC = () => {
 
   return (
     <div className={classes.root}>
-      <p className={cx({ [classes.rotate]: toggled }, classes.text)}>
+      <p className={cx({ [classes.bounce]: toggled }, classes.text)}>
         Hello world
       </p>
       <Button

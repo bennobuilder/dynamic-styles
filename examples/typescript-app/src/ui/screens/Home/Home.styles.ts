@@ -1,38 +1,61 @@
-import { css } from '@emotion/react';
+import { css, keyframes } from '@emotion/react';
 import { createStyles } from '../../../theme';
-import { keyframes } from 'create-styles';
 
-export const useStyles = createStyles<HomeStyles>()((theme, params) => ({
-  root: css`
-    display: flex;
-    height: 100vh;
-    flex-direction: column;
-    background: ${params.toggled ? theme.colors.white : theme.colors.red};
-    align-items: center;
-    justify-content: center;
-  `,
-  text: {
-    fontWeight: 'bold',
-    fontSize: '100px',
-    color: params.toggled ? 'black' : theme.colors.green,
-  },
-  rotate: {
-    '& g': {
-      opacity: 0,
-      animation: `${keyframes`
-            60%, 100% {
-                opacity: 0;
-            }
-            0% {
-                opacity: 0;
-            }
-            40% {
-                opacity: 1;
-            }
-            `} 3.5s infinite ease-in-out`,
-    },
-  },
-}));
+const bounce = keyframes`
+  from, 20%, 53%, 80%, to {
+    transform: translate3d(0,0,0);
+  }
+
+  40%, 43% {
+    transform: translate3d(0, -30px, 0);
+  }
+
+  70% {
+    transform: translate3d(0, -15px, 0);
+  }
+
+  90% {
+    transform: translate3d(0,-4px,0);
+  }
+`;
+
+export const useStyles = createStyles<HomeStyles>()(
+  (theme, params, createRef) => {
+    // create reference
+    const text = createRef('text');
+
+    console.log('Text', text);
+
+    return {
+      root: css`
+        display: flex;
+        height: 50vh;
+        flex-direction: column;
+        background: ${params.toggled ? theme.colors.white : theme.colors.red};
+        align-items: center;
+        justify-content: center;
+        border: solid 1px black;
+
+        :hover .${text} {
+          text-decoration: underline;
+          background: rebeccapurple;
+        }
+      `,
+      text: {
+        // assign reference to selector
+        ref: text,
+
+        // and add any other properties
+        fontWeight: 'bold',
+        fontSize: '100px',
+        color: params.toggled ? 'black' : theme.colors.green,
+      },
+      bounce: css`
+        animation: ${bounce} 1s ease infinite;
+      `,
+    };
+  }
+);
 
 export default useStyles;
 
