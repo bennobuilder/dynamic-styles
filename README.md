@@ -49,7 +49,7 @@ $ npm install create-styles @emotion/react
 
 ### 🟨 Javascript support
 Although `create-styles` has been designed with [Typescript](https://www.typescriptlang.org/) in mind 
-it can of course be used in any vanilla JS projects.
+it can, of course, be used in any vanilla JS project.
 
 <br/>
 
@@ -63,16 +63,16 @@ First, instantiate the method `createStyles()` using the `makeCreateStyles()` me
 ```ts
 import { makeCreateStyles } from 'create-styles';
 
-// Theme hook that should return the current theme of the App. 
-// This theme will then be used in the created 'createStyles()' method.
+// Theme hook that returns the current theme of the app. 
 function useTheme(): Theme {
     return {
-        "primaryColor": "#32CD32",
+        primaryColor: "#32CD32",
     };
 }
 
-// Initialization of the 'createStyles()' method with the theme hook,
-// which exposes the apps theme to the 'createStyles()' method.
+// Initialization of the 'createStyles()' method using the 'makeCreateStyles()' method.
+// The theme hook is given as the only parameter,
+// and should expose the apps theme to the 'createStyles()' method.
 export const createStyles = makeCreateStyles(useTheme);
 ```
 
@@ -87,8 +87,8 @@ import { createStyles } from "./styles";
 
 type MyComponentStyles = { color: "red" | "blue", fontSize: number }
 
-// Specify styles and use them later with the returned 'useStyles()' hook
-// (Note: Double method ('createStyle()()') due to partial type inference of TStyles)
+// Specify dynamic styles and access them later with the returned 'useStyles()' hook.
+// (Note: Double method ('createStyle()()') due to partial type inference of 'TStyles')
 const useStyles = createStyles<MyComponentStyles>()(
     (theme, params) => ({
         // The styles of the specified classes can be created with a css object 
@@ -111,8 +111,8 @@ export const Demo: React.FC = (props) => {
     const { className } = props;
     const [color, setColor] = useState<"red" | "blue">("red");
 
-    // Use the created 'useStyles()' hook to access the specified styles
-    // and some utilities like 'cx()'
+    // Use the created 'useStyles()' hook to access the specified stylesheet as classes
+    // and some utilities like 'cx()'.
     const { classes, cx } = useStyles({ color, fontSize: 10 });
 
     return (
@@ -125,10 +125,11 @@ export const Demo: React.FC = (props) => {
 
 ## 🔗 Classes merging with `cx()`
 
-To merge class names use the `cx()` method.
-It has the same api as the popular [clsx](https://www.npmjs.com/package/clsx) package.
+To merge class names, use the `cx()` method.
+It has the same API as the popular [clsx](https://www.npmjs.com/package/clsx) package
+but is optimized for the use with emotion.
 
-The key advantage of `cx` is that it detects emotion generated class names
+The key advantage of `cx()` is that it detects emotion generated class names
 ensuring styles are overwritten in the correct order.
 Emotion generated styles are applied from left to right.
 Subsequent styles overwrite property values of previous styles.
@@ -163,7 +164,7 @@ const Demo: React.FC = () => {
   return (
     <div>
       <button
-        // Merge classes with the 'cx()' method
+        // Merge class names with the 'cx()' method
         className={cx(classes.button, { [classes.active]: active === 0 })}
         onClick={() => setActive(0)}
         type="button"
@@ -171,7 +172,7 @@ const Demo: React.FC = () => {
         First
       </button>
       <button
-        // Merge classes with the 'cx()' method  
+        // Merge class names with the 'cx()' method  
         className={cx(classes.button, classes.bold, { [classes.active]: active === 1 })}
         onClick={() => setActive(1)}
         type="button"
@@ -192,7 +193,7 @@ The `createStyles()` method receives the `createRef()` method to handle the crea
 import React from 'react';
 import { createStyles } from "./styles";
 
-const useStyles = createStyles((theme, _params, createRef) => {
+const useStyles = createStyles((theme, params, createRef) => {
   // Create reference for future use
   const button = createRef('button'); // Returns a static selector (e.g. 'prefix-ref_button_1')
 
@@ -280,7 +281,7 @@ const Demo: React.FC = () => {
 
 ## 🌍 Global styles
 
-Sometimes you might want to insert global css. You can use the <GlobalStyles /> component to do this.
+Sometimes you might want to insert `global css` styles. You can use the <GlobalStyles /> component to do this.
 ```tsx
 import React from 'react';
 import { GlobalStyles } from 'create-styles';
@@ -309,7 +310,7 @@ export function App() {
 
 ## 🌈 `normalize.css`
 
-The NormalizeCss component sets the normalized styles specified in [normalize.css](https://necolas.github.io/normalize.css/) globally.
+The `NormalizeCss` component sets the normalized styles specified in [normalize.css](https://necolas.github.io/normalize.css/) globally.
 ```tsx
 import {NormalizeCSS} from 'create-styles';
 
@@ -324,6 +325,11 @@ function App() {
 ```
 
 ## ✍️ Inline styles
+
+If you plan to style reusable components with the `createStyles()` API, 
+you may want to customize the components later with, for example, inline styles.
+You can easily achieve this specifying the `styles` property (e.g. partial of specified stylesheet) 
+in the `useStyles()` hook's configuration object. 
 
 ### `Button.tsx`
 
@@ -347,12 +353,13 @@ type ButtonStyles = {
     radius: number;
 };
 
-// Create type that represents the created stylesheet type (extracte from the 'useStyles()' hook).
-// Can then be used to add the inline styles property to the Button component.
+// Create a type that represents the created stylesheet type (extracted from the 'useStyles()' hook).
+// Can then be used to add a typesafe styles property to the Button component.
 export type ExtractedStylesType = ExtractStylesType<typeof useStyles>;
 
 export const Button: React.FC<ButtonProps> = (props) => {
   const { color = 'blue', radius = 0, styles = {}, onClick } = props;
+  // Pass the 'styles' property to the 'useStyles()' hook
   const { classes } = useStyles({ color, radius }, { styles, name: 'Button' });
 
   return (
@@ -372,7 +379,8 @@ type ButtonProps = {
 
 ### `./MyComponent.tsx`
 
-Use the created `Button` component and specify `inline` styles.
+Use the created `Button` component and specify `inline` styles 
+using the `styles` property.
 ```tsx
 import React from 'react';
 import { css } from '@emotion/react';
@@ -405,6 +413,27 @@ const MyComponent: React.FC = () => {
 
 ---
 
-### 🎉 Inspired by:
+## FAQ
+
+<details>
+  <summary>Click to expand</summary>
+    
+### Why `create-styles` and not just using [`tss-react`](https://github.com/garronej/tss-react/blob/main/README.md)?
+Because `tss-react` was explicitly designed as a replacement for the `makeStyle` API 
+deprecated in Material UI 5 and thus isn't optimized for the general use (without Material UI). 
+Also, did it not meet all my needs, such as creating styles with the `css()` method provided by `Emotion` 
+and wasn't fully typesafe.
+```ts
+const useStyles = createStyles()((theme, params) => ({
+    root: css`
+       // Write styles as in CSS and not in the form of an object
+    `,
+}));
+```
+    
+</details>
+
+## 🎉 Inspired by:
+
 - https://github.com/garronej/tss-react
 - https://github.com/mantinedev/mantine/tree/master/src/mantine-styles
