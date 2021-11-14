@@ -413,7 +413,9 @@ const MyComponent: React.FC = () => {
 
 ---
 
-## FAQ
+<br/>
+
+## ❓ FAQ
 
 <details>
   <summary>Click to expand</summary>

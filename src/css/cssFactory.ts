@@ -11,6 +11,8 @@ import { StyleItem } from '../createStyles';
 export const { cssFactory } = (() => {
   const refPropertyName = 'ref';
 
+  // Tries to extract the 'ref' property from the first argument of the specified args.
+  // But only if just one argument is given and the given argument is of the type object.
   function extractRef(args: any[]) {
     let ref: string | null = null;
 
@@ -67,6 +69,8 @@ export const { cssFactory } = (() => {
      * @param styles - Styles to be converted into a class name
      */
     const css: CSSType = (...styles) => {
+      // TODO 'ref' can only be extracted if one style item was provided
+      //  and the style item is of the type object
       const { ref, args } = extractRef(styles);
 
       // Serialize specified styles to one 'SerializedStyle'
