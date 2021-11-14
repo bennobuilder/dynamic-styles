@@ -15,15 +15,22 @@
 ---
 
 Create dynamic style sheets and link them with a function component using the hook pattern.
-```ts
+```tsx
 const useStyles = createStyles()((theme, params) => ({
     root: /* */,
     container: /* */,
     text: /* */,
-}))
-```
+}));
 
----
+const MyComponent = () => {
+    const { classes } = useStyles({ color: 'red', fontSize: 10 });
+    return (
+    <div className={classes.root}>
+        {/* */}
+    </div>
+);
+}
+```
 
 - ✅ Fully featured TypeScript support
 - ✅ Build on top of [`@emotion/react`](https://emotion.sh/docs/@emotion/react): As fast and lightweight as emotion
