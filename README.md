@@ -2,7 +2,7 @@
 
 <img src="https://raw.githubusercontent.com/bennodev19/emotion-create-styles/develop/static/banner.png" alt="Banner">
 <div>
-    <i>✨ Css-in-Js styles engine, based on Emotion</i>
+    <i>✨ Css-in-Js styles engine, based on <a href="https://emotion.sh/">Emotion<a/></i>
     <br>
     <br>
     <img src="https://img.shields.io/bundlephobia/bennodev19/emotion-create-styles">
@@ -12,7 +12,9 @@
 
 <br>
 
-Link a style sheet with a function component using the hook pattern.
+---
+
+Create dynamic style sheets and link them with a function component using the hook pattern.
 ```ts
 const useStyles = createStyles()((theme, params) => ({
     root: /* */,
@@ -20,6 +22,8 @@ const useStyles = createStyles()((theme, params) => ({
     text: /* */,
 }))
 ```
+
+---
 
 - ✅ Fully featured TypeScript support
 - ✅ Build on top of [`@emotion/react`](https://emotion.sh/docs/@emotion/react): As fast and lightweight as emotion
@@ -46,7 +50,9 @@ Although `create-styles` has been designed with Typescript in mind it can of cou
 
 ## 🪁 Basic usage
 
-`./styles.ts`
+### `./styles.ts`
+
+First, instantiate the method `createStyles()` using the `makeCreateStyles()` method.
 ```ts
 import { makeCreateStyles } from 'create-styles';
 
@@ -63,7 +69,10 @@ function useTheme(): Theme {
 export const createStyles = makeCreateStyles(useTheme);
 ```
 
-`./MyComponent.tsx`
+### `./MyComponent.tsx`
+
+Use the instantiated `createStyles()` method to create dynamic styles 
+and link them to a function component using the hook pattern.
 ```tsx
 import React from 'react';
 import { css } from '@emotion/react';
@@ -167,11 +176,100 @@ const Demo: React.FC = () => {
 }
 ```
 
-## 🖌 Composition and nested selectors
-todo
+## ⚗️ Composition and nested selectors
 
-## 🎞 Keyframes
-todo
+Since `createStyles()` generates scoped class names based on the specified stylesheet,
+you have to create a reference to the selector (e.g. 'button') to get the static selector (e.g. 'prefix-ref_button_1').
+The `createStyles()` method receives the `createRef()` method to handle the creation of static selectors.
+```tsx
+import React from 'react';
+import { createStyles } from "./styles";
+
+const useStyles = createStyles((theme, _params, createRef) => {
+  // Create reference for future use
+  const button = createRef('button'); // Returns static selector (e.g. 'prefix-ref_button_1')
+
+  return {
+    button: {
+      // Assign reference to 'ref' selector
+      ref: button,
+
+      // and add any other properties
+      backgroundColor: theme.colors.blue,
+      color: theme.colors.white,
+      padding: `10px 20px`,
+      borderRadius: 5,
+      cursor: 'pointer',
+    },
+
+    container: {
+      display: 'flex',
+      justifyContent: 'center',
+      backgroundColor: theme.colors.white,
+      padding: 10,
+
+      // Reference button with nested selector
+      [`&:hover .${button}`]: {
+        backgroundColor: theme.colors.violet[6],
+      },
+    },
+  };
+});
+
+const Demo: React.FC = () => {
+  const { classes } = useStyles();
+  return (
+    <div className={classes.container}>
+      <button className={classes.button} type="button">
+        Hover container to change button color
+      </button>
+    </div>
+  );
+}
+```
+
+## 🎥 Keyframes
+
+You can define animations using the [`keyframes`](https://emotion.sh/docs/keyframes#gatsby-focus-wrapper) helper from `@emotion/react`. 
+`keyframes` takes in a css keyframe definition and returns an object you can use in styles. 
+You can use strings or objects just like `css`.
+```tsx
+import React from 'react';
+import { keyframes } from '@emotion/react';
+import { createStyles } from "./styles";
+
+// Create keyframes with the 'keyframes()' method
+const bounce = keyframes`
+  from, 20%, 53%, 80%, to {
+    transform: translate3d(0,0,0);
+  }
+
+  40%, 43% {
+    transform: translate3d(0, -30px, 0);
+  }
+
+  70% {
+    transform: translate3d(0, -15px, 0);
+  }
+
+  90% {
+    transform: translate3d(0,-4px,0);
+  }
+`
+
+const useStyles = createStyles((theme) => ({
+  container: {
+    textAlign: 'center',
+    // Use specified 'bounce' keyframes in the 'container' styles  
+    animation: `${bounce} 3s ease-in-out infinite`,
+  },
+}));
+
+const Demo: React.FC = () => {
+  const { classes } = useStyles();
+  return <div className={classes.container}>Keyframes demo</div>;
+}
+```
 
 ## 🌍 Global styles
 
@@ -201,7 +299,7 @@ export function App() {
 }
 ```
 
-## 🎎 `normalize.css`
+## 🌈 `normalize.css`
 
 The NormalizeCss component sets the normalized styles specified in [normalize.css](https://necolas.github.io/normalize.css/) globally.
 ```tsx
@@ -218,10 +316,9 @@ function App() {
 ```
 
 # 🔨 API documentation
-todo
+coming soon
 
 
 ### 🎉 Inspired by:
 - https://github.com/garronej/tss-react
-- https://github.com/cssinjs/jss
 - https://github.com/mantinedev/mantine/tree/master/src/mantine-styles
