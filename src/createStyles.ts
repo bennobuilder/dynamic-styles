@@ -62,7 +62,8 @@ export function makeCreateStyles<TTheme>(useTheme: () => TTheme) {
        * @param config - Configuration object
        */
       return (params, config = {}) => {
-        config = { name: undefined, styles: {}, classNames: {}, ...config };
+        const styles = config.styles ?? {};
+        const classNames = config.classNames ?? {};
 
         let count = 0;
         // Method to create a ref in 'createStyles'
@@ -75,9 +76,7 @@ export function makeCreateStyles<TTheme>(useTheme: () => TTheme) {
         const { css, cx } = useCss();
         const _styles = getStyles(theme, params, createRef);
         const _expandedStyles = (
-          typeof config.styles === 'function'
-            ? config.styles(theme)
-            : config.styles
+          typeof styles === 'function' ? styles(theme) : styles
         ) as Partial<TStyles>;
 
         // Transform specified 'styles' into classes
@@ -96,7 +95,7 @@ export function makeCreateStyles<TTheme>(useTheme: () => TTheme) {
             typeof _expandedStyles[key] !== 'string'
               ? css(_expandedStyles[key])
               : _expandedStyles[key],
-            config.classNames
+            classNames
           );
         }
 
