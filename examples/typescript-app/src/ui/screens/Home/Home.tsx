@@ -5,11 +5,13 @@ import { css } from '@emotion/react';
 
 const Home: React.FC = () => {
   const [toggled, setToggled] = React.useState(false);
-  const { classes } = useStyles({ toggled });
+  const { classes, cx } = useStyles({ toggled });
 
   return (
     <div className={classes.root}>
-      <p className={classes.text}>Hello world</p>
+      <p className={cx({ [classes.bounce]: toggled }, classes.text)}>
+        Hello world
+      </p>
       <Button
         color={'#4f5be8'}
         radius={20}

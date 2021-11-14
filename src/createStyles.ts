@@ -1,6 +1,7 @@
 import { Interpolation, SerializedStyles } from '@emotion/react';
-import { CXType, useCss } from './hooks/useCss';
+import { useCss } from './hooks/useCss';
 import { STYLE_PREFIX } from './config';
+import { CXType } from './css';
 
 /**
  * Helper method to merge the specified classes
@@ -37,9 +38,7 @@ function mergeClassNames<T extends Record<string, string>>(
 export function makeCreateStyles<TTheme>(useTheme: () => TTheme) {
   // Double method ('createStyle()()') due to partial type inference of TStyles
   // https://stackoverflow.com/questions/63678306/typescript-partial-type-inference
-  return <
-      TParams extends Record<string, unknown> = Record<string, unknown>
-    >() =>
+  return <TParams extends Record<string, unknown> | undefined = undefined>() =>
     /**
      * Transfers the (in object shape or emotion style) specified styles
      * into the returned 'useStyles()' hook.
@@ -63,15 +62,21 @@ export function makeCreateStyles<TTheme>(useTheme: () => TTheme) {
        * @param config - Configuration object
        */
       return (params, config = {}) => {
-        config = { name: undefined, styles: {}, classNames: {}, ...config };
+        const styles = config.styles ?? {};
+        const classNames = config.classNames ?? {};
+
+        let count = 0;
+        // Method to create a ref in 'createStyles'
+        function createRef(refName: string) {
+          count += 1;
+          return `${STYLE_PREFIX}-ref_${refName || ''}_${count}`;
+        }
 
         const theme = useTheme();
         const { css, cx } = useCss();
-        const _styles = getStyles(theme, params as any);
+        const _styles = getStyles(theme, params, createRef);
         const _expandedStyles = (
-          typeof config.styles === 'function'
-            ? config.styles(theme)
-            : config.styles
+          typeof styles === 'function' ? styles(theme) : styles
         ) as Partial<TStyles>;
 
         // Transform specified 'styles' into classes
@@ -83,14 +88,14 @@ export function makeCreateStyles<TTheme>(useTheme: () => TTheme) {
               : (_styles[key] as any);
         }
 
-        // Transform specified 'expandedStyles' into classes and merge them with the 'classNames'
+        // Transform '_expandedStyles' into classes and merge them with the specified 'classNames'
         const expandedClasses: Record<string, string> = {};
         for (const key of Object.keys(_expandedStyles)) {
           expandedClasses[key] = cx(
             typeof _expandedStyles[key] !== 'string'
               ? css(_expandedStyles[key])
               : _expandedStyles[key],
-            config.classNames
+            classNames
           );
         }
 
@@ -102,6 +107,7 @@ export function makeCreateStyles<TTheme>(useTheme: () => TTheme) {
             config.name
           ),
           cx,
+          theme,
         };
       };
     };
@@ -115,10 +121,16 @@ export type StyleItem =
 export type StylesData = Record<string, StyleItem>;
 
 type StylesType<
-  TParams extends Record<string, unknown>,
+  TParams extends Record<string, unknown> | undefined,
   TStyles extends StylesData,
   TTheme
-> = TStyles | ((theme: TTheme, params: TParams) => TStyles);
+> =
+  | TStyles
+  | ((
+      theme: TTheme,
+      params: TParams,
+      createRef: (refName: string) => string
+    ) => TStyles);
 
 export type ExtendedStylesType<TStyles extends StylesData, TTheme> =
   | Partial<MapToX<TStyles, StyleItem>>
@@ -146,7 +158,7 @@ type UseStylesConfigType<TStyles extends StylesData, TTheme> = {
   name?: string;
 };
 
-type UseStylesReturnType<TStyles extends StylesData> = {
+type UseStylesReturnType<TStyles extends StylesData, TTheme> = {
   /**
    * Merges the specified class names.
    *
@@ -167,17 +179,21 @@ type UseStylesReturnType<TStyles extends StylesData> = {
    * specified in the 'createStyles()' method.
    */
   classes: MapToX<TStyles, string>;
+  /**
+   * Theme
+   */
+  theme: TTheme;
 };
 
 export type UseStylesType<
-  TParams extends Record<string, unknown>,
+  TParams extends Record<string, unknown> | undefined,
   TStyles extends StylesData,
   TTheme,
   TConfig extends UseStylesConfigType<TStyles, TTheme> = UseStylesConfigType<
     TStyles,
     TTheme
   >
-> = (params?: TParams, config?: TConfig) => UseStylesReturnType<TStyles>;
+> = (params: TParams, config?: TConfig) => UseStylesReturnType<TStyles, TTheme>;
 
 export type ExtractStylesType<T> = T extends UseStylesType<
   infer TParams,

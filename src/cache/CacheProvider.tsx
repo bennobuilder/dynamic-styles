@@ -1,11 +1,6 @@
 import React from 'react';
 import { EmotionCache } from '@emotion/cache';
 
-interface CacheProviderProps {
-  value: EmotionCache;
-  children: React.ReactNode;
-}
-
 export const CacheContext = React.createContext<EmotionCache | null>(null);
 
 const CacheProvider: React.FC<CacheProviderProps> = (props) => {
@@ -16,3 +11,8 @@ const CacheProvider: React.FC<CacheProviderProps> = (props) => {
 };
 
 export default CacheProvider;
+
+type CacheProviderProps = {
+  value: EmotionCache;
+  children: React.ReactNode;
+};

@@ -26,3 +26,5 @@ src/*.js
 src/*.js.map
 *.tgz
 dist
+.yalc
+yalc.lock
