@@ -8,7 +8,16 @@
     <img src="https://img.shields.io/npm/l/create-styles">
 </div>
 
+<br>
+
 Link a style sheet with a function component using the hook pattern.
+```ts
+const useStyles = createStyles()((theme, params) => ({
+    root: /* */,
+    container: /* */,
+    text: /* */,
+}))
+```
 
 - ✅ Fully featured TypeScript support
 - ✅ Build on top of [`@emotion/react`](https://emotion.sh/docs/@emotion/react): As fast and lightweight as emotion
