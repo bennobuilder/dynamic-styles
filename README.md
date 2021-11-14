@@ -10,11 +10,14 @@
     <img src="https://img.shields.io/npm/l/create-styles">
 </div>
 
-<br>
-
 ---
 
-Create dynamic style sheets and link them with a function component using the hook pattern.
+Create dynamic style sheets and link them to functional components using the React `hook` pattern.
+- ✅ Fully featured TypeScript support
+- ✅ Build on top of [`@emotion/react`](https://emotion.sh/docs/@emotion/react): As fast and lightweight as emotion
+- ✅ Supports all emotion features: lazy evaluation, dynamic theming, etc.
+- ✅ Server side rendering support: Next.js, Gatsby or any other environment
+- ✅ `@emotion` cache support
 ```tsx
 const useStyles = createStyles()((theme, params) => ({
     root: /* */,
@@ -32,12 +35,6 @@ const MyComponent = () => {
 }
 ```
 
-- ✅ Fully featured TypeScript support
-- ✅ Build on top of [`@emotion/react`](https://emotion.sh/docs/@emotion/react): As fast and lightweight as emotion
-- ✅ Supports all emotion features: lazy evaluation, dynamic theming, etc.
-- ✅ Server side rendering support: Next.js, Gatsby or any other environment
-- ✅ `@emotion` cache support
-
 ### 💻 Installation
 
 ```bash
@@ -51,7 +48,10 @@ $ npm install create-styles @emotion/react
 - (more coming soon)
 
 ### 🟨 Javascript support
-Although `create-styles` has been designed with Typescript in mind it can of course be used in any vanilla JS projects.
+Although `create-styles` has been designed with [Typescript](https://www.typescriptlang.org/) in mind 
+it can of course be used in any vanilla JS projects.
+
+<br/>
 
 # ⏳ Quick Start
 
@@ -79,7 +79,7 @@ export const createStyles = makeCreateStyles(useTheme);
 ### `./MyComponent.tsx`
 
 Use the instantiated `createStyles()` method to create dynamic styles 
-and link them to a function component using the hook pattern.
+and link them to functional components using the React hook pattern.
 ```tsx
 import React from 'react';
 import { css } from '@emotion/react';
@@ -123,10 +123,10 @@ export const Demo: React.FC = (props) => {
 }
 ```
 
-## 🔗 Classes merging (`cx()` function)
+## 🔗 Classes merging with `cx()`
 
-To merge class names use the `cx()` function.
-It has the same api as [clsx](https://www.npmjs.com/package/clsx) package.
+To merge class names use the `cx()` method.
+It has the same api as the popular [clsx](https://www.npmjs.com/package/clsx) package.
 
 The key advantage of `cx` is that it detects emotion generated class names
 ensuring styles are overwritten in the correct order.
@@ -194,11 +194,11 @@ import { createStyles } from "./styles";
 
 const useStyles = createStyles((theme, _params, createRef) => {
   // Create reference for future use
-  const button = createRef('button'); // Returns static selector (e.g. 'prefix-ref_button_1')
+  const button = createRef('button'); // Returns a static selector (e.g. 'prefix-ref_button_1')
 
   return {
     button: {
-      // Assign reference to 'ref' selector
+      // Assign reference to the selector via the 'ref' property
       ref: button,
 
       // and add any other properties
@@ -215,7 +215,7 @@ const useStyles = createStyles((theme, _params, createRef) => {
       backgroundColor: theme.colors.white,
       padding: 10,
 
-      // Reference button with nested selector
+      // Reference button with the previously created static selector
       [`&:hover .${button}`]: {
         backgroundColor: theme.colors.violet[6],
       },
@@ -282,6 +282,7 @@ const Demo: React.FC = () => {
 
 Sometimes you might want to insert global css. You can use the <GlobalStyles /> component to do this.
 ```tsx
+import React from 'react';
 import { GlobalStyles } from 'create-styles';
 
 export function App() {
@@ -322,9 +323,87 @@ function App() {
 }
 ```
 
-# 🔨 API documentation
-coming soon
+## ✍️ Inline styles
 
+### `Button.tsx`
+
+Create `Button` component.
+```tsx
+import React from 'react';
+import { createStyles } from "./styles";
+
+const useStyles = createStyles<ButtonStyles>()((theme, { color, radius }) => ({
+    root: {
+        color: theme.colors.white,
+        backgroundColor: color,
+        borderRadius: radius,
+        padding: '10px 20px',
+        cursor: 'pointer',
+    },
+}));
+
+type ButtonStyles = {
+    color: string;
+    radius: number;
+};
+
+// Create type that represents the created stylesheet type (extracte from the 'useStyles()' hook).
+// Can then be used to add the inline styles property to the Button component.
+export type ExtractedStylesType = ExtractStylesType<typeof useStyles>;
+
+export const Button: React.FC<ButtonProps> = (props) => {
+  const { color = 'blue', radius = 0, styles = {}, onClick } = props;
+  const { classes } = useStyles({ color, radius }, { styles, name: 'Button' });
+
+  return (
+    <button type="button" className={classes.root} onClick={onClick}>
+      {color} button with {radius}px radius
+    </button>
+  );
+};
+
+type ButtonProps = {
+  color?: string;
+  radius?: number;
+  styles?: ExtractedStylesType; // Complete typesafety based on the created stylesheet
+  onClick: () => void;
+};
+```
+
+### `./MyComponent.tsx`
+
+Use the created `Button` component and specify `inline` styles.
+```tsx
+import React from 'react';
+import { css } from '@emotion/react';
+import { Button } from './Button';
+
+const MyComponent: React.FC = () => {
+  return (
+    <div>
+        <Button
+            onClick={() => setToggled(!toggled)}
+            // Inline styles using the 'styles' property
+            styles={{
+              root: css`
+                  background: rebeccapurple;
+              `,
+            }}
+        />
+    </div>
+  );
+};
+```
+
+<br/>
+
+---
+
+# 🔨 API documentation
+
+`coming soon`
+
+---
 
 ### 🎉 Inspired by:
 - https://github.com/garronej/tss-react
