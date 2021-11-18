@@ -32,31 +32,38 @@ export class StyleSheet<TTheme extends Record<string, unknown> = {}> {
   }
 
   /**
-   * Specifies Params for the `create()` styles method.
+   * Indicator for the chain methods to work with `params`.
    *
-   * This had to be excluded from the actual `create()` method
+   * Typescript:
+   * Via this method the generic for the `params` object can be specified.
+   * The `params` generic had to be excluded from the actual `create()` method
    * due to partial type inference of `TStyles`.
    * https://stackoverflow.com/questions/63678306/typescript-partial-type-inference
+   *
+   * @public
    */
   public withParams<
-    TParams extends Record<string, unknown> | undefined = undefined
+    TParams extends Record<string, unknown> = Record<string, unknown>
   >() {
     return {
-      /**
-       * Transfers the (in object shape or emotion style) specified stylesheet
-       * into class names that can be accessed via the returned `useStyles` hook.
-       *
-       * The returned `useStyles()` hook should be used in React components
-       * to access the generated style class names and other utilities
-       * for working with emotion-based class names.
-       *
-       * @public
-       * @param styles - Stylesheet to be transferred into class names.
-       */
       create: <TStyles extends StylesData = StylesData>(
-        styles: StylesType<TParams, TStyles, TTheme>
-      ): UseStylesType<TParams, TStyles, TTheme> =>
-        this.createStyle<TParams, TStyles>(styles, true),
+        styles: StylesType<TParams, TStyles, TTheme, true>
+      ): UseStylesType<TParams, TStyles, TTheme, true> =>
+        this.createStyles<TParams, TStyles, true>(true, styles),
+    };
+  }
+
+  /**
+   * Indicator for the cain methods to work without `params`.
+   *
+   * @public
+   */
+  public withoutParams() {
+    return {
+      create: <TStyles extends StylesData = StylesData>(
+        styles: StylesType<{}, TStyles, TTheme, false>
+      ): UseStylesType<{}, TStyles, TTheme, false> =>
+        this.createStyles<{}, TStyles, false>(false, styles),
     };
   }
 
@@ -71,10 +78,11 @@ export class StyleSheet<TTheme extends Record<string, unknown> = {}> {
    * @public
    * @param styles - Stylesheet to be transferred into class names.
    */
-  public create<TStyles extends StylesData = StylesData>(
-    styles: StylesType<undefined, TStyles, TTheme>
-  ) {
-    return this.createStyle<undefined, TStyles>(styles, false);
+  public create<
+    TParams extends Record<string, unknown> = Record<string, unknown>,
+    TStyles extends StylesData = StylesData
+  >(styles: StylesType<TParams, TStyles, TTheme, true>) {
+    return this.createStyles<TParams, TStyles, true>(true, styles);
   }
 
   /**
@@ -82,16 +90,17 @@ export class StyleSheet<TTheme extends Record<string, unknown> = {}> {
    * into class names that can be accessed via the returned `useStyles()` hook.
    *
    * @internal
-   * @param styles - Stylesheet to be transferred into class names.
    * @param withParams - Whether to create the stylesheet with params (Helper property for Typescript).
+   * @param styles - Stylesheet to be transferred into class names.
    */
-  private createStyle<
-    TParams extends Record<string, unknown> | undefined = undefined,
-    TStyles extends StylesData = StylesData
+  private createStyles<
+    TParams extends Record<string, unknown> = Record<string, unknown>,
+    TStyles extends StylesData = StylesData,
+    TWithParams extends boolean = boolean
   >(
-    styles: StylesType<TParams, TStyles, TTheme>,
-    withParams = true
-  ): UseStylesType<TParams, TStyles, TTheme> {
+    withParams: TWithParams,
+    styles: StylesType<TParams, TStyles, TTheme, TWithParams>
+  ): UseStylesType<TParams, TStyles, TTheme, TWithParams> {
     const getStyles = typeof styles === 'function' ? styles : () => styles;
 
     /**
@@ -130,7 +139,7 @@ export class StyleSheet<TTheme extends Record<string, unknown> = {}> {
         withParams
           ? { theme, params: _params, createRef, assignRef }
           : { theme, createRef, assignRef }
-      ) as StylesPropsType<TParams, TTheme>;
+      ) as StylesPropsType<TParams, TTheme, TWithParams>;
       const _styles = getStyles(getStylesConfig);
       const _expandedStyles = (
         typeof styles === 'function' ? styles(theme) : styles
@@ -254,22 +263,23 @@ export type StyleItem =
 export type StylesData = Record<string, StyleItem>;
 
 type StylesType<
-  TParams extends Record<string, unknown> | undefined,
+  TParams extends Record<string, unknown>,
   TStyles extends StylesData,
-  TTheme
-> = TStyles | ((props: StylesPropsType<TParams, TTheme>) => TStyles);
+  TTheme,
+  TWithParams extends boolean
+> =
+  | TStyles
+  | ((props: StylesPropsType<TParams, TTheme, TWithParams>) => TStyles);
 
 type StylesPropsType<
-  TParams extends Record<string, unknown> | undefined,
-  TTheme
-> = TParams extends undefined
-  ? Omit<BaseStylesPopsType<TParams, TTheme>, 'params'>
-  : BaseStylesPopsType<TParams, TTheme>;
+  TParams extends Record<string, unknown>,
+  TTheme,
+  TWithParams extends boolean
+> = TWithParams extends true
+  ? BaseStylesPopsType<TParams, TTheme>
+  : Omit<BaseStylesPopsType<TParams, TTheme>, 'params'>;
 
-type BaseStylesPopsType<
-  TParams extends Record<string, unknown> | undefined,
-  TTheme
-> = {
+type BaseStylesPopsType<TParams extends Record<string, unknown>, TTheme> = {
   theme: TTheme;
   params: TParams;
   createRef: (refName: string) => string;
@@ -283,13 +293,14 @@ export type ExpandedStylesType<TStyles extends StylesData, TTheme> =
 export type UseStylesType<
   TParams extends Record<string, unknown> | undefined,
   TStyles extends StylesData,
-  TTheme
-> = TParams extends undefined
+  TTheme,
+  TWithParams extends boolean
+> = TWithParams extends true
   ? (
+      params: TParams,
       config?: UseStylesConfigType<TStyles, TTheme>
     ) => UseStylesReturnType<TStyles, TTheme>
   : (
-      params: TParams,
       config?: UseStylesConfigType<TStyles, TTheme>
     ) => UseStylesReturnType<TStyles, TTheme>;
 
@@ -351,7 +362,8 @@ type UseStylesReturnType<TStyles extends StylesData, TTheme> = {
 export type UseStylesExtractStylesType<T> = T extends UseStylesType<
   infer TParams,
   infer TStyles,
-  infer TTheme
+  infer TTheme,
+  infer TWithParams
 >
   ? ExpandedStylesType<TStyles, TTheme>
   : never;
