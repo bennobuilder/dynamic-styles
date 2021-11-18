@@ -172,8 +172,10 @@ export class StyleSheet<TTheme extends Record<string, unknown> = {}> {
   }
 
   /**
-   * Hook to retrieve a memorized `cx` and `css` method,
+   * React Hook that returns the memorized `cx()` and `css()` method,
    * that can be used to easily handle emotion based styles.
+   *
+   * @public
    */
   public useCss() {
     const cache = this.useCache();
@@ -182,8 +184,10 @@ export class StyleSheet<TTheme extends Record<string, unknown> = {}> {
   }
 
   /**
-   * Returns the cache instance provided by the enclosed 'CacheProvider'
+   * React Hook that returns the cache instance provided by the enclosed 'CacheProvider'
    * or an internally managed cache instance if no 'CacheProvider' could be found.
+   *
+   * @public
    */
   public useCache() {
     const cache = React.useContext(CacheContext);
@@ -231,7 +235,7 @@ export type StyleSheetConfig<TTheme> = {
    */
   key?: string;
   /**
-   * todo
+   * Options for configuring the Emotion Cache the StyleSheet relies on.
    * @default { prepend: true }
    */
   cache?: Omit<Options, 'key'>;
