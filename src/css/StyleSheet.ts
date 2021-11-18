@@ -14,7 +14,8 @@ export class StyleSheet<TTheme extends Record<string, unknown> = {}> {
   public readonly cache: EmotionCache;
 
   /**
-   * todo
+   * Create dynamic style sheets and link them to functional components
+   * using the React hook pattern.
    *
    * @param config - Configuration object
    */

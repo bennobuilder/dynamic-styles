@@ -5,7 +5,7 @@ export * from './StyleSheet';
 export default StyleSheet;
 
 /**
- * todo
+ * Instantiates a new `StyleSheet` instance.
  *
  * @public
  * @param config - Configuration object

@@ -12,17 +12,17 @@
 
 ---
 
-Create dynamic style sheets and link them to functional components using the React `hook` pattern.
-- ✅ Fully featured TypeScript support
+Create dynamic stylesheets and link them to functional components using the React `hook` pattern.
 - ✅ Build on top of [`@emotion/react`](https://emotion.sh/docs/@emotion/react): As fast and lightweight as emotion
 - ✅ Supports all emotion features: lazy evaluation, dynamic theming, etc.
+- ✅ Fully featured TypeScript support
 - ✅ Server side rendering support: Next.js, Gatsby or any other environment
 - ✅ `@emotion` cache support
 ```tsx
-const useStyles = createStyles()(({theme, params}) => ({
-    root: /* */,
-    container: /* */,
-    text: /* */,
+const useStyles = styleSheet.create(({theme, params}) => ({
+    root: /* Styles */,
+    container: /* Styles */,
+    text: /* Styles */,
 }));
 
 const MyComponent = () => {
@@ -47,58 +47,53 @@ $ npm install create-styles @emotion/react
 - [Basic example](https://codesandbox.io/s/emotion-create-styles-byu6s?file=/src/theme.ts)
 - (more coming soon)
 
-### 🟨 Javascript support
-Although `create-styles` has been designed with [Typescript](https://www.typescriptlang.org/) in mind 
-it can, of course, be used in any vanilla JS project.
-
 <br/>
-
-# ⏳ Quick Start
 
 ## 🪁 Basic usage
 
-### `./styles.ts`
+### 📂 `./styles.js`
 
-First, instantiate the method `createStyles()` using the `makeCreateStyles()` method.
+To create any styles, we must first instantiate a top-level `StyleSheet` instance.
+The `StyleSheet` instance will be used to create dynamic and reusable stylesheets.
+In the configuration object that the `createStylesheet()` method takes up,
+we can specify among others the current *theme* of our application,
+so that we can easily access it in the stylesheets we create later.
 ```ts
-import { makeCreateStyles } from 'create-styles';
+import { createStylesheet } from 'create-styles';
 
-// Theme hook that returns the current theme of the app. 
-function useTheme(): Theme {
-    return {
-        primaryColor: "#32CD32",
-    };
-}
-
-// Initialization of the 'createStyles()' method using the 'makeCreateStyles()' method.
-// The theme hook is given as the only parameter,
-// and should expose the apps theme to the 'createStyles()' method.
-export const createStyles = makeCreateStyles(useTheme);
+// Initialization of a StyleSheet instance called 'styleSheet'
+export const styleSheet = createStylesheet({
+    theme: {
+       primaryColor: "#32CD32",
+    }
+});
 ```
 
-### `./MyComponent.tsx`
+### 📂 `./MyComponent.jsx`
 
-Use the instantiated `createStyles()` method to create dynamic styles 
-and link them to functional components using the React hook pattern.
-```tsx
+In our React Component (`MyComponent.jsx`) we can now use the instantiated top-level `StyleSheet` instance
+to create a dynamic stylesheet for it.
+Such dynamic stylesheet can contain multiple styles
+clustered in understandable chunks for the different parts of our Component.
+For examples, styles for the `root` container of the Component 
+and some `text` component.
+```ts
 import React from 'react';
-import { css } from '@emotion/react';
-import { createStyles } from "./styles";
+import {css} from '@emotion/react';
+import styleSheet from "./styles";
 
-type MyComponentStyles = { color: "red" | "blue", fontSize: number }
-
-// Specify dynamic styles and access them later with the returned 'useStyles()' hook.
-// (Note: Double method ('createStyle()()') due to partial type inference of 'TStyles')
-const useStyles = createStyles<MyComponentStyles>()(
+// Specify dynamic styles and access them later in any React Component 
+// using the returned 'useStyles()' hook.
+const useStyles = styleSheet.create(
     ({theme, params}) => ({
-        // The styles of the specified classes can be created with a css object 
+        // Styles of the specified classes can be created using a css object, ..
         root: {
             backgroundColor: params.color,
             "&:hover": {
                 backgroundColor: theme.primaryColor,
             },
         },
-        // or with the common 'css()' method of '@emotion/react'
+        // .. or the common 'css()' method of '@emotion/react'
         text: css`
            font-weight: bold;
            font-size: ${params.fontSize}px;
@@ -106,13 +101,16 @@ const useStyles = createStyles<MyComponentStyles>()(
         `
     }),
 );
-
+```
+We use the `useStyles()` hook, to access the specified styles 
+and feed them with the corresponding dynamic parameters (`params`).
+```tsx
 export const Demo: React.FC = (props) => {
     const { className } = props;
-    const [color, setColor] = useState<"red" | "blue">("red");
+    const [color, setColor] = useState("red");
 
-    // Use the created 'useStyles()' hook to access the specified stylesheet as classes
-    // and some utilities like 'cx()'.
+    // Use the created 'useStyles()' hook to access the specified styles as classes
+    // and some utility functions like 'cx()' for merging class names.
     const { classes, cx } = useStyles({ color, fontSize: 10 });
 
     return (
@@ -125,9 +123,9 @@ export const Demo: React.FC = (props) => {
 
 ## 🔗 Classes merging with `cx()`
 
-To merge class names, use the `cx()` method.
+To merge class names, you should use the `cx()` method returned by `useStyles()`.
 It has the same API as the popular [clsx](https://www.npmjs.com/package/clsx) package
-but is optimized for the use with emotion.
+but is optimized for the use with `emotion`.
 
 The key advantage of `cx()` is that it detects emotion generated class names
 ensuring styles are overwritten in the correct order.
@@ -135,9 +133,9 @@ Emotion generated styles are applied from left to right.
 Subsequent styles overwrite property values of previous styles.
 ```tsx
 import React from 'react';
-import { createStyles } from "./styles";
+import { styleSheet } from "./styles";
 
-const useStyles = createStyles()(({theme}) => ({
+const useStyles = styleSheet.create(({theme}) => ({
   button: {
     backgroundColor: theme.colors.darkBlue,
     border: 0,
@@ -147,11 +145,11 @@ const useStyles = createStyles()(({theme}) => ({
     cursor: 'pointer',
   },
 
-  active: {
+  highlight: {
     backgroundColor: theme.colors.lightBlue,
     color: theme.colors.black,
   },
-    
+
   bold: {
     fontWeight: 'bold',
   }  
@@ -164,16 +162,16 @@ const Demo: React.FC = () => {
   return (
     <div>
       <button
-        // Merge class names with the 'cx()' method
-        className={cx(classes.button, { [classes.active]: active === 0 })}
+        // Merge styles (class names) with the 'cx()' method
+        className={cx(classes.button, { [classes.highlight]: active === 0 })}
         onClick={() => setActive(0)}
         type="button"
       >
         First
       </button>
       <button
-        // Merge class names with the 'cx()' method  
-        className={cx(classes.button, classes.bold, { [classes.active]: active === 1 })}
+        // Merge styles (class names) with the 'cx()' method  
+        className={cx(classes.button, classes.bold, { [classes.highlight]: active === 1 })}
         onClick={() => setActive(1)}
         type="button"
       >
@@ -183,6 +181,10 @@ const Demo: React.FC = () => {
   );
 }
 ```
+
+## 🟦 Typescript
+
+todo
 
 ## ⚗️ Composition and nested selectors
 
