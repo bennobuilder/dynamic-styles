@@ -1,8 +1,9 @@
-import createStyles from '../../../theme';
-import { ExtractStylesType } from 'create-styles';
+import styleSheet from '../../../theme';
+import { UseStylesExtractStylesType } from 'create-styles';
 
-const useStyles = createStyles<ButtonStyles>()(
-  ({ theme, params: { color, radius } }) => ({
+const useStyles = styleSheet
+  .withParams<ButtonStyles>()
+  .create(({ theme, params: { color, radius } }) => ({
     root: {
       color: theme.colors.white,
       backgroundColor: color,
@@ -13,8 +14,7 @@ const useStyles = createStyles<ButtonStyles>()(
       cursor: 'pointer',
       height: 100,
     },
-  })
-);
+  }));
 
 export default useStyles;
 
@@ -23,4 +23,4 @@ type ButtonStyles = {
   radius: number;
 };
 
-export type ExtractedStylesType = ExtractStylesType<typeof useStyles>;
+export type ExtractedStylesType = UseStylesExtractStylesType<typeof useStyles>;

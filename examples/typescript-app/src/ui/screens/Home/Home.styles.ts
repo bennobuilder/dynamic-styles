@@ -1,5 +1,5 @@
 import { css, keyframes } from '@emotion/react';
-import { createStyles } from '../../../theme';
+import { styleSheet } from '../../../theme';
 
 const bounce = keyframes`
   from, 20%, 53%, 80%, to {
@@ -19,8 +19,9 @@ const bounce = keyframes`
   }
 `;
 
-export const useStyles = createStyles<HomeStyles>()(
-  ({ theme, params, createRef, assignRef }) => {
+export const useStyles = styleSheet
+  .withParams<HomeStyles>()
+  .create(({ theme, params, createRef, assignRef }) => {
     // create reference
     const text = createRef('text');
 
@@ -58,8 +59,7 @@ export const useStyles = createStyles<HomeStyles>()(
         animation: ${bounce} 1s ease infinite;
       `,
     };
-  }
-);
+  });
 
 export default useStyles;
 

@@ -1,21 +1,34 @@
 import React from 'react';
-import { CXType } from './css';
-import { STYLE_PREFIX } from './config';
+import CssFactory, { CXType } from './css';
 import { Interpolation, SerializedStyles } from '@emotion/react';
-import { useCss } from './hooks/useCss';
+import { useGuaranteedMemo } from './hooks/useGuaranteedMemo';
+import createCache, { EmotionCache, Options } from '@emotion/cache';
+import { CacheContext } from './components';
 
 export class StyleSheet<TTheme extends Record<string, unknown> = {}> {
   // Theme the Stylesheet works with
   public useTheme: () => TTheme;
+  // Key/Name identifier of the StyleSheet
+  public readonly key: string;
+  // Emotion Cache of the StyleSheet
+  public readonly cache: EmotionCache;
 
   /**
    * todo
    *
-   * @param theme - Theme by the Stylesheet.
+   * @param config - Configuration object
    */
-  constructor(theme?: TTheme | (() => TTheme)) {
+  constructor(config: StyleSheetConfig<TTheme> = {}) {
+    this.key = config.key || 'cs';
     this.useTheme =
-      typeof theme !== 'function' ? () => theme || {} : (theme as any);
+      typeof config.theme !== 'function'
+        ? () => config.theme || {}
+        : (config.theme as any);
+    this.cache = createCache({
+      key: this.key,
+      prepend: true,
+      ...config?.cache,
+    });
   }
 
   /**
@@ -99,19 +112,19 @@ export class StyleSheet<TTheme extends Record<string, unknown> = {}> {
       const name = _config.name;
 
       const theme = this.useTheme();
-      const { css, cx } = useCss();
+      const { css, cx } = this.useCss();
 
       let count = 0;
       // Creates a static selector that can be referenced.
-      function createRef(refName: string) {
+      const createRef = (refName: string) => {
         count += 1;
-        return `${STYLE_PREFIX}-ref_${refName ?? 'unknown'}_${count}`;
-      }
+        return `${this.key}-ref_${refName ?? 'unknown'}_${count}`;
+      };
 
       // Assigns the specified reference ('refName') to the style instance ('style').
-      function assignRef(refName: string, style: StyleItem): string {
+      const assignRef = (refName: string, style: StyleItem): string => {
         return cx(refName, css(style));
-      }
+      };
 
       const getStylesConfig = (
         withParams
@@ -159,6 +172,25 @@ export class StyleSheet<TTheme extends Record<string, unknown> = {}> {
   }
 
   /**
+   * Hook to retrieve a memorized `cx` and `css` method,
+   * that can be used to easily handle emotion based styles.
+   */
+  public useCss() {
+    const cache = this.useCache();
+    const cssFactory = new CssFactory(this.key);
+    return useGuaranteedMemo(() => cssFactory.build(cache), [cache]);
+  }
+
+  /**
+   * Returns the cache instance provided by the enclosed 'CacheProvider'
+   * or an internally managed cache instance if no 'CacheProvider' could be found.
+   */
+  public useCache() {
+    const cache = React.useContext(CacheContext);
+    return cache ?? this.cache;
+  }
+
+  /**
    * Merges the specified class names
    * with the expanding class names at the corresponding key.
    *
@@ -184,13 +216,31 @@ export class StyleSheet<TTheme extends Record<string, unknown> = {}> {
         // To have a readable 'static selector' for styling with e.g. scss.
         // This class name has initially no styling applied.
         // e.g. 'prefix-text-root' or 'prefix-button-container'
-        name ? `${STYLE_PREFIX}-${name}-${classKey}` : null
+        name ? `${this.key}-${name}-${classKey}` : null
       );
     }
 
     return mergedClasses as any;
   }
 }
+
+export type StyleSheetConfig<TTheme> = {
+  /**
+   * Key/Name identifier of the StyleSheet
+   * @default 'cs'
+   */
+  key?: string;
+  /**
+   * todo
+   * @default { prepend: true }
+   */
+  cache?: Omit<Options, 'key'>;
+  /**
+   * Theme the Stylesheet should work with.
+   * @default undefined
+   */
+  theme?: TTheme | (() => TTheme);
+};
 
 export type StyleItem =
   | SerializedStyles // to do emotion based 'css' styles
@@ -299,23 +349,3 @@ export type UseStylesExtractStylesType<T> = T extends UseStylesType<
 export type MapToX<T, X = any> = {
   [K in keyof T]: X;
 };
-
-// TYPE TEST GROUND | TODO REMOVE ----------------------------------------------------------
-
-const myStyleSheet = new StyleSheet();
-const useStyles = myStyleSheet.create(({ theme }) => ({
-  container: {},
-  text: {},
-}));
-const { classes, theme } = useStyles();
-
-const myStyleSheet2 = new StyleSheet({ color: 'red' });
-const useStyles2 = myStyleSheet2
-  .withParams<{ clicked: boolean }>()
-  .create(({ params }) => ({
-    container: {},
-    text: {},
-  }));
-const { classes: classes2, theme: theme2 } = useStyles2({ clicked: true });
-
-// TYPE TEST GROUND | TODO REMOVE ----------------------------------------------------------

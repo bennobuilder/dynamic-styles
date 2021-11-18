@@ -1,12 +1,9 @@
-import { makeCreateStyles } from './createStyles';
-import NormalizeCSS from './components/NormalizeCSS';
-import GlobalStyles from './components/GlobalStyles';
+import { StyleSheet } from './StyleSheet';
 
-export * from './createStyles';
-export { CacheContext } from './cache';
-export { NormalizeCSS, GlobalStyles };
+export * from './StyleSheet';
+export * from './components';
 
 // Reexport from @emotion/react
 export { keyframes } from '@emotion/react';
 
-export default makeCreateStyles;
+export default StyleSheet;
