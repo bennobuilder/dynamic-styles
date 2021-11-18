@@ -1,5 +1,17 @@
-import { CssFactory } from './CssFactory';
+import { StyleSheet, StyleSheetConfig } from './StyleSheet';
 
-export * from './CssFactory';
+export * from './StyleSheet';
 
-export default CssFactory;
+export default StyleSheet;
+
+/**
+ * todo
+ *
+ * @public
+ * @param config - Configuration object
+ */
+export function createStyleSheet<TTheme extends Record<string, unknown> = {}>(
+  config: StyleSheetConfig<TTheme> = {}
+) {
+  return new StyleSheet<TTheme>(config);
+}

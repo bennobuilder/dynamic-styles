@@ -1,6 +1,6 @@
-import { StyleSheet } from './StyleSheet';
+import StyleSheet from './css';
 
-export * from './StyleSheet';
+export * from './css';
 export * from './components';
 
 // Reexport from @emotion/react

@@ -2,7 +2,7 @@ import { EmotionCache } from '@emotion/cache';
 import { RegisteredCache, serializeStyles } from '@emotion/serialize';
 import { getRegisteredStyles, insertStyles } from '@emotion/utils';
 import clsx from 'clsx';
-import { StyleItem } from '../StyleSheet';
+import type { StyleItem } from './StyleSheet';
 
 // Inspired by
 // https://emotion.sh/docs/class-names

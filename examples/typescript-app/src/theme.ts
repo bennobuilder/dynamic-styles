@@ -1,4 +1,4 @@
-import StyleSheet from 'create-styles';
+import { createStyleSheet } from 'create-styles';
 
 export type Theme = {
   colors: {
@@ -26,6 +26,6 @@ export const useTheme = (): Theme => {
   };
 };
 
-export const styleSheet = new StyleSheet({ theme: useTheme });
+export const styleSheet = createStyleSheet({ theme: useTheme });
 
 export default styleSheet;

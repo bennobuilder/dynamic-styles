@@ -1,9 +1,9 @@
 import React from 'react';
-import CssFactory, { CXType } from './css';
+import { CssFactory, CXType } from './CssFactory';
 import { Interpolation, SerializedStyles } from '@emotion/react';
-import { useGuaranteedMemo } from './hooks/useGuaranteedMemo';
+import { useGuaranteedMemo } from '../hooks/useGuaranteedMemo';
 import createCache, { EmotionCache, Options } from '@emotion/cache';
-import { CacheContext } from './components';
+import { CacheContext } from '../components';
 
 export class StyleSheet<TTheme extends Record<string, unknown> = {}> {
   // Theme the Stylesheet works with
@@ -19,7 +19,7 @@ export class StyleSheet<TTheme extends Record<string, unknown> = {}> {
    * @param config - Configuration object
    */
   constructor(config: StyleSheetConfig<TTheme> = {}) {
-    this.key = config.key || 'cs';
+    this.key = config.key ?? 'cs';
     this.useTheme =
       typeof config.theme !== 'function'
         ? () => config.theme || {}
@@ -27,7 +27,7 @@ export class StyleSheet<TTheme extends Record<string, unknown> = {}> {
     this.cache = createCache({
       key: this.key,
       prepend: true,
-      ...config?.cache,
+      ...(config?.cache || {}),
     });
   }
 
@@ -83,14 +83,14 @@ export class StyleSheet<TTheme extends Record<string, unknown> = {}> {
    *
    * @internal
    * @param styles - Stylesheet to be transferred into class names.
-   * @param withParams - Whether to create the stylesheet with params.
+   * @param withParams - Whether to create the stylesheet with params (Helper property for Typescript).
    */
   private createStyle<
     TParams extends Record<string, unknown> | undefined = undefined,
     TStyles extends StylesData = StylesData
   >(
     styles: StylesType<TParams, TStyles, TTheme>,
-    withParams = false
+    withParams = true
   ): UseStylesType<TParams, TStyles, TTheme> {
     const getStyles = typeof styles === 'function' ? styles : () => styles;
 
@@ -213,7 +213,7 @@ export class StyleSheet<TTheme extends Record<string, unknown> = {}> {
       mergedClasses[classKey] = cx(
         classNames[classKey],
         toMergeClassName || null,
-        // To have a readable 'static selector' for styling with e.g. scss.
+        // To have a readable 'static selector' for styling with e.g. scss, ..
         // This class name has initially no styling applied.
         // e.g. 'prefix-text-root' or 'prefix-button-container'
         name ? `${this.key}-${name}-${classKey}` : null
@@ -305,7 +305,13 @@ type UseStylesConfigType<TStyles extends StylesData, TTheme> = {
    */
   classNames?: Partial<MapToX<TStyles, string>>;
   /**
-   * Key/Name identifier of the created styles.
+   * Key/Name identifier of the created style sheet.
+   *
+   * The here specified name is used to create a readable 'static selector'
+   * for styling with e.g. scss, ..
+   * This class name has initially no styling applied.
+   * e.g. 'prefix-${name}-root' or 'prefix-${name}-container'
+   *
    * @default 'unknown'
    */
   name?: string;
@@ -333,7 +339,7 @@ type UseStylesReturnType<TStyles extends StylesData, TTheme> = {
    */
   classes: MapToX<TStyles, string>;
   /**
-   * Theme
+   * Theme the created stylesheet used.
    */
   theme: TTheme;
 };
