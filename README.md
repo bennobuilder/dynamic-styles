@@ -5,7 +5,7 @@
     <i>✨ Css-in-Js styles engine, based on <a href="https://emotion.sh/">Emotion<a/></i>
     <br>
     <br>
-    <img src="https://img.shields.io/bundlephobia/bennodev19/emotion-create-styles">
+    <img src="https://img.shields.io/bundlephobia/minzip/create-styles">
     <img src="https://img.shields.io/npm/dw/create-styles">
     <img src="https://img.shields.io/npm/l/create-styles">
 </div>
@@ -137,7 +137,7 @@ Subsequent styles overwrite property values of previous styles.
 import React from 'react';
 import { createStyles } from "./styles";
 
-const useStyles = createStyles(({theme}) => ({
+const useStyles = createStyles()(({theme}) => ({
   button: {
     backgroundColor: theme.colors.darkBlue,
     border: 0,
@@ -193,7 +193,7 @@ The `createStyles()` method receives the `createRef()` method to handle the crea
 import React from 'react';
 import { createStyles } from "./styles";
 
-const useStyles = createStyles(({theme, params, createRef, assignRef}) => {
+const useStyles = createStyles()(({theme, params, createRef, assignRef}) => {
   // Create reference for future use
   const button = createRef('button'); // Returns a static selector (e.g. 'prefix-ref_button_1')
 
@@ -277,7 +277,7 @@ const bounce = keyframes`
   }
 `
 
-const useStyles = createStyles(({theme}) => ({
+const useStyles = createStyles()(({theme}) => ({
   container: {
     textAlign: 'center',
     // Use specified 'bounce' keyframes in the 'container' styles  
