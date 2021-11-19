@@ -211,7 +211,7 @@ which, by the way, is possible,
 we would lose the type inference of the stylesheet object 
 and would have to specify it manually (e.g. `create<ParamsType, StylesheetType>()`).
 
-<details/>
+</details>
 
 ```ts
 import React from 'react';
