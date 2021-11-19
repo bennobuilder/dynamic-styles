@@ -5,7 +5,7 @@ import { css } from '@emotion/react';
 
 const Home: React.FC = () => {
   const [toggled, setToggled] = React.useState(false);
-  const { classes, cx } = useStyles({ toggled });
+  const { classes, cx } = useStyles({ toggled }, { name: 'Home' });
 
   return (
     <div className={classes.root}>

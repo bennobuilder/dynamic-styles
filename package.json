@@ -1,7 +1,7 @@
 {
-  "name": "create-styles",
-  "version": "0.0.5",
-  "description": "Css-in-Js styles engine, based on Emotion",
+  "name": "dynamic-styles",
+  "version": "0.0.6",
+  "description": "Dynamic Css-in-Js styles engine, based on Emotion",
   "license": "MIT",
   "homepage": "https://github.com/bennodev19/emotion-create-styles",
   "author": "BennoDev <bennodev19@gmail.com>",
