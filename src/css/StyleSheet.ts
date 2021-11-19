@@ -20,7 +20,7 @@ export class StyleSheet<TTheme extends Record<string, unknown> = {}> {
    * @param config - Configuration object
    */
   constructor(config: StyleSheetConfig<TTheme> = {}) {
-    this.key = config.key ?? 'cs';
+    this.key = config.key ?? 'ds'; // ds = 'dynamic styles'
     this.useTheme =
       typeof config.theme !== 'function'
         ? () => config.theme || {}

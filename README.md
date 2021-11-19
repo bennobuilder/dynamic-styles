@@ -42,14 +42,14 @@ const MyComponent = (props) => {
 ### 💻 Installation
 
 ```bash
-$ yarn add create-styles @emotion/react
+$ yarn add dynamic-styles @emotion/react
 # or
-$ npm install create-styles @emotion/react
+$ npm install dynamic-styles @emotion/react
 ```
 
 ### ⛳️ Code Sandbox
-- [React Typescript](https://codesandbox.io/s/emotion-create-styles-byu6s?file=/src/theme.ts)
-- [React Javascript](todo)
+- [React Javascript](https://codesandbox.io/s/ds-basic-usage-js-nk55r)
+- [React Typescript](https://codesandbox.io/s/ds-basic-usage-ts-b25id)
 - [React-Native Javascript](todo)
 - (more coming soon)
 
@@ -57,7 +57,7 @@ $ npm install create-styles @emotion/react
 
 ## 🪁 Basic usage
 
-### 📂 `./styles.js`
+#### 📂 `./styles.js`
 
 To create any styles, we must first instantiate a top-level `StyleSheet` instance.
 The `StyleSheet` instance will be used to create dynamic and reusable stylesheets later.
@@ -75,7 +75,7 @@ export const styleSheet = createStylesheet({
 });
 ```
 
-### 📂 `./MyComponent.jsx`
+#### 📂 `./MyComponent.jsx`
 
 In our React Component (`MyComponent.jsx`) we can now use the instantiated top-level `StyleSheet` instance
 to create a dynamic stylesheet for the Component.
@@ -126,7 +126,7 @@ export const Demo = (props) => {
     );
 }
 ```
-[Live Demo](todo)
+[Live Demo](https://codesandbox.io/s/ds-basic-usage-js-nk55r)
 
 ## 🔗 Classes merging with `cx()`
 
@@ -188,11 +188,62 @@ const Demo: React.FC = () => {
   );
 }
 ```
-[Live Demo](todo)
+[Live Demo](https://codesandbox.io/s/ds-class-merging-js-72de4)
 
 ## 🟦 Typescript
 
-todo
+TODO
+Example from [Basic usage](#-basic-usage)
+```ts
+import React from 'react';
+import {css} from '@emotion/react';
+import styleSheet from "./styles";
+
+type DemoStyles = {
+  color: string;
+  fontSize: number;
+}
+
+// Specify dynamic styles and access them later in any React Component 
+// using the returned 'useStyles()' hook.
+const useStyles = styleSheet
+  .withParams<DemoStyles>()
+  .create(
+    ({theme, params}) => ({
+        root: {
+            backgroundColor: params.color,
+            "&:hover": {
+                backgroundColor: theme.primaryColor,
+            },
+        },
+      
+        text: css`
+           font-weight: bold;
+           font-size: ${params.fontSize}px;
+           color: black;
+        `
+    }),
+);
+```
+We use the `useStyles()` hook, to access the specified styles in the corresponding Component
+and feed it with the corresponding dynamic parameters (`params`).
+```tsx
+export const Demo: React.FC<TDemoProps> = (props) => {
+    const { className } = props;
+    const [color, setColor] = useState("red");
+
+    // Use the created 'useStyles()' hook to access the specified styles as classes
+    // and some utility functions like 'cx()' for merging class names.
+    const { classes, cx } = useStyles({ color, fontSize: 10 });
+
+    return (
+        <div className={cx(classes.root, className)}>
+            <p className={classes.text}>hello world</p>
+        </div>
+    );
+}
+```
+[Live Demo](https://codesandbox.io/s/ds-basic-usage-ts-b25id)
 
 ## ⚗️ Composition and nested selectors
 
@@ -261,7 +312,7 @@ const Demo = () => {
   );
 }
 ```
-[Live Demo](todo)
+[Live Demo](https://codesandbox.io/s/ds-composition-and-nested-selectors-js-m5wcb)
 
 ## 🎥 Keyframes
 
@@ -306,7 +357,7 @@ const Demo = () => {
   return <div className={classes.container}>Keyframes demo</div>;
 }
 ```
-[Live Demo](todo)
+[Live Demo](https://codesandbox.io/s/ds-keyframes-js-vnoqw)
 
 ## 🌍 Global styles
 
@@ -337,10 +388,12 @@ export function App() {
   );
 }
 ```
-[Live Demo](todo)
+[Live Demo](https://codesandbox.io/s/ds-global-styles-js-sncu4)
 
 ## 🌈 `normalize.css`
 
+In a web environment it is often necessary to 'normalize'
+(Makes browsers render all elements more consistently and in line with modern standards) the `css`.
 The `NormalizeCss` component sets the normalized styles specified in [normalize.css](https://necolas.github.io/normalize.css/) globally.
 ```tsx
 import {NormalizeCSS} from 'create-styles';
@@ -354,23 +407,26 @@ function App() {
     );
 }
 ```
-[Live Demo](todo)
+[Live Demo](https://codesandbox.io/s/ds-normalize-css-js-fzhof)
 
 ## ✍️ Inline styles
 
-If you plan to style reusable components with the `createStyles()` API, 
-you may want to customize the components later with, for example, inline styles.
-You can easily achieve this specifying the `styles` property (e.g. partial of specified stylesheet) 
+Often we need to create reusable Components
+that should be customizable later on among other things with inline styles.
+You can easily make Components customizable with inline styles
+by specifying the `styles` property (e.g. partial of specified stylesheet) 
 in the `useStyles()` hook's configuration object. 
 
-### `Button.tsx`
+#### `Button.tsx`
 
-Create `Button` component.
+Here we create a reusable Button that can be styled 
+via inline styles using the `styles` property.
 ```tsx
 import React from 'react';
-import { createStyles } from "./styles";
+import { styleSheet } from "./styles";
 
-const useStyles = createStyles<ButtonStyles>()(({theme, params: { color, radius }}) => ({
+const useStyles = styleSheet.withParams<ButtonStyles>()
+  .create(({theme, params: { color, radius }}) => ({
     root: {
         color: theme.colors.white,
         backgroundColor: color,
@@ -386,7 +442,7 @@ type ButtonStyles = {
 };
 
 // Create a type that represents the created stylesheet type (extracted from the 'useStyles()' hook).
-// Can then be used to add a typesafe styles property to the Button component.
+// This type can be used to add a typesafe styles property to the Button component.
 export type ExtractedStylesType = ExtractStylesType<typeof useStyles>;
 
 export const Button: React.FC<ButtonProps> = (props) => {
@@ -409,7 +465,7 @@ type ButtonProps = {
 };
 ```
 
-### `./MyComponent.tsx`
+#### `./MyComponent.tsx`
 
 Use the created `Button` component and specify `inline` styles 
 using the `styles` property.
@@ -434,6 +490,7 @@ const MyComponent: React.FC = () => {
   );
 };
 ```
+[Live Demo](https://codesandbox.io/s/ds-inline-styles-ts-8uuu3)
 
 <br/>
 
@@ -451,8 +508,19 @@ const MyComponent: React.FC = () => {
 
 <details>
   <summary>Click to expand</summary>
+
+### `React-Native StyleSheet` vs `dynamic styles`
+
+|                                               | `dynamic-styles` | `React-Native` Stylesheet |
+|-----------------------------------------------|------------------|---------------------------|
+| Compatible with `React-Native`                | ✅                | ✅                        |
+| Compatible with  `React`                      | ✅                | ❌                        |
+| Access global theme                           | ✅                | 🟨                        |
+| Influence styles via `props` of the Component | ✅                | ❌                        |
+| Styling with `JavaScript` Object              | ✅                | ✅                        |
+| Styling with `Emotion` styles                 | ✅                | ❌                        |
     
-### Why `create-styles` and not just using [`tss-react`](https://github.com/garronej/tss-react/blob/main/README.md)?
+### Why `dynamic-styles` and not just using [`tss-react`](https://github.com/garronej/tss-react/blob/main/README.md)?
 Because `tss-react` was explicitly designed as a replacement for the `makeStyle` API 
 deprecated in Material UI 5 and thus isn't optimized for the general use (without Material UI). 
 Also, did it not meet all my needs, such as creating styles with the `css()` method provided by `Emotion` 
@@ -469,5 +537,5 @@ const useStyles = createStyles()((theme, params) => ({
 
 ## 🎉 Inspired by:
 
-- https://github.com/garronej/tss-react
-- https://github.com/mantinedev/mantine/tree/master/src/mantine-styles
+The syntax of `dynamic-styles` is inspired by the [React Native Stylesheet API](https://reactnative.dev/docs/stylesheet).
+Under the hood we also got some inspiration from [TSS-React](https://github.com/garronej/tss-react) and [Mantine-Styles](https://github.com/mantinedev/mantine/tree/master/src/mantine-styles).
