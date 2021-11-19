@@ -1,4 +1,4 @@
-import { createStyleSheet } from 'create-styles';
+import { createStyleSheet } from 'dynamic-styles';
 
 export type Theme = {
   colors: {

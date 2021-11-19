@@ -1,13 +1,13 @@
 # 🏃‍♀ Dynamic Styles
 
-<img src="https://raw.githubusercontent.com/bennodev19/emotion-create-styles/master/static/banner.png" alt="Banner">
+<img src="https://raw.githubusercontent.com/bennodev19/dynamic-styles/master/static/banner.png" alt="Banner">
 <div>
     <i>✨ Dynamic Css-in-Js styles engine, based on <a href="https://emotion.sh/">Emotion<a/></i>
     <br>
     <br>
-    <img src="https://img.shields.io/bundlephobia/minzip/create-styles">
-    <img src="https://img.shields.io/npm/dw/create-styles">
-    <img src="https://img.shields.io/npm/l/create-styles">
+    <img src="https://img.shields.io/bundlephobia/minzip/dynamic-styles">
+    <img src="https://img.shields.io/npm/dw/dynamic-styles">
+    <img src="https://img.shields.io/npm/l/dynamic-styles">
 </div>
 
 ---
@@ -63,7 +63,7 @@ In the configuration object that the `createStylesheet()` method takes up,
 we can specify our application's current *theme*.
 We can easily access this theme in the stylesheets we create later.
 ```ts
-import { createStylesheet } from 'create-styles';
+import { createStylesheet } from 'dynamic-styles';
 
 // Initialization of a StyleSheet instance called 'styleSheet'
 export const styleSheet = createStylesheet({
@@ -211,7 +211,7 @@ Thus, we would have to specify it manually (e.g. `create<ParamsType, StyleSheetT
 import React from 'react';
 import { css } from '@emotion/react';
 import styleSheet from "./styles";
-import { StyleItem } from 'create-styles';
+import { StyleItem } from 'dynamic-styles';
 
 type DemoStyles = {
     color: string;
@@ -413,7 +413,7 @@ Sometimes we might want to insert `global css` styles.
 We can use the `<GlobalStyles />` component to do this.
 ```jsx
 import React from 'react';
-import { GlobalStyles } from 'create-styles';
+import { GlobalStyles } from 'dynamic-styles';
 
 const App = () => {
   return (
@@ -449,7 +449,7 @@ and in line with modern standards.
 The `NormalizeCss` Component sets the normalized styles 
 specified in [normalize.css](https://necolas.github.io/normalize.css/) globally.
 ```jsx
-import { NormalizeCSS } from 'create-styles';
+import { NormalizeCSS } from 'dynamic-styles';
 
 const App = () => {
     return (
@@ -562,7 +562,7 @@ const Demo: React.FC = () => {
 <details>
   <summary>Click to expand</summary>
 
-### `React-Native StyleSheet` vs `dynamic styles`
+### `React-Native StyleSheet` vs `dynamic-styles`
 
 |                                               | `dynamic-styles` | `React-Native` Stylesheet |
 |-----------------------------------------------|------------------|---------------------------|
