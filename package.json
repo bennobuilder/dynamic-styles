@@ -1,6 +1,6 @@
 {
   "name": "dynamic-styles",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "description": "Dynamic Css-in-Js styles engine, based on Emotion",
   "license": "MIT",
   "homepage": "https://github.com/bennodev19/dynamic-styles",
