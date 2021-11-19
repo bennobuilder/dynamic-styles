@@ -20,7 +20,7 @@ Create dynamic `stylesheets` and link them to functional components using the Re
 - ✅ `@emotion` cache support
 - 🟨 Well tested (working on it)
 ```jsx
-// Create dynamic stylesheet that has access to the specified theme and parameters
+// Create dynamic stylesheet that has access to the previously specified theme and parameters
 const useStyles = styleSheet.create(({theme, params}) => ({
     root: /* Dynamic Styles */,
     button: /* Dynamic Styles */,
@@ -53,14 +53,12 @@ $ npm install dynamic-styles @emotion/react
 - [React-Native Javascript](todo)
 - (more coming soon)
 
-<br/>
-
 ## 🪁 Basic usage
 
 #### 📂 `./styles.js`
 
 To create any styles, we must first instantiate a top-level `StyleSheet` instance.
-The `StyleSheet` instance will be used to create dynamic and reusable stylesheets later.
+This `StyleSheet` instance will be used to create dynamic and reusable stylesheets later.
 In the configuration object that the `createStylesheet()` method takes up,
 we can specify our application's current *theme*.
 We can easily access this theme in the stylesheets we create later.
@@ -75,7 +73,7 @@ export const styleSheet = createStylesheet({
 });
 ```
 
-#### 📂 `./MyComponent.jsx`
+#### 📂 `./Demo.jsx`
 
 In our React Component (`MyComponent.jsx`) we can now use the instantiated top-level `StyleSheet` instance
 to create a dynamic stylesheet for the Component.
@@ -85,21 +83,22 @@ For example, styles for the `root` container
 and some `text` contained in the Component.
 ```js
 import React from 'react';
-import {css} from '@emotion/react';
+import { css } from '@emotion/react';
 import styleSheet from "./styles";
 
 // Specify dynamic styles and access them later in any React Component 
-// using the returned 'useStyles()' hook.
+// with the returned 'useStyles()' hook.
 const useStyles = styleSheet.create(
     ({theme, params}) => ({
-        // Styles of the specified classes can be created using a css object, ..
+        // Styles of the specified selectors can be created using a css object, ..
         root: {
             backgroundColor: params.color,
             "&:hover": {
                 backgroundColor: theme.primaryColor,
             },
         },
-        // .. or the common 'css()' method of '@emotion/react'
+        
+        // .. or the common 'css()' method provided by '@emotion/react'
         text: css`
            font-weight: bold;
            font-size: ${params.fontSize}px;
@@ -108,14 +107,14 @@ const useStyles = styleSheet.create(
     }),
 );
 ```
-We use the `useStyles()` hook, to access the specified styles in the corresponding Component
-and feed it with the corresponding dynamic parameters (`params`).
+We use the `useStyles()` hook, to access the specified styles in the corresponding Component (`Demo`)
+and feed it with dynamic parameters (`params`).
 ```jsx
 export const Demo = (props) => {
     const { className } = props;
     const [color, setColor] = useState("red");
 
-    // Use the created 'useStyles()' hook to access the specified styles as classes
+    // Use the created 'useStyles()' hook to access the specified styles as class names
     // and some utility functions like 'cx()' for merging class names.
     const { classes, cx } = useStyles({ color, fontSize: 10 });
 
@@ -130,7 +129,7 @@ export const Demo = (props) => {
 
 ## 🔗 Classes merging with `cx()`
 
-To merge class names, you should use the `cx()` method returned by `useStyles()`.
+To merge class names, we should use the `cx()` method returned by `useStyles()`.
 It has the same API as the popular [clsx](https://www.npmjs.com/package/clsx) package
 but is optimized for the use with `emotion`.
 
@@ -138,7 +137,7 @@ The key advantage of `cx()` is that it detects emotion generated class names
 ensuring styles are overwritten in the correct order.
 Emotion-generated styles are applied from left to right.
 Subsequent styles overwrite property values of previous styles.
-```tsx
+```jsx
 import React from 'react';
 import { styleSheet } from "./styles";
 
@@ -162,25 +161,23 @@ const useStyles = styleSheet.create(({theme}) => ({
   }  
 }));
 
-const Demo: React.FC = () => {
+const Demo = () => {
   const [active, setActive] = useState(0);
   const { classes, cx } = useStyles();
 
   return (
     <div>
       <button
-        // Merge styles (class names) with the 'cx()' method
+        // Merge styles (class names) using the 'cx()' method
         className={cx(classes.button, { [classes.highlight]: active === 0 })}
         onClick={() => setActive(0)}
-        type="button"
       >
         First
       </button>
       <button
-        // Merge styles (class names) with the 'cx()' method  
+        // Merge styles (class names) using the 'cx()' method  
         className={cx(classes.button, classes.bold, { [classes.highlight]: active === 1 })}
         onClick={() => setActive(1)}
-        type="button"
       >
         Second (Bold)
       </button>
@@ -193,29 +190,59 @@ const Demo: React.FC = () => {
 ## 🟦 Typescript
 
 The `dynamic-styles` API is fully type-safe.
-Let's take a look at the [Basic usage](#-basic-usage) example converted to Typescript.
-The only part worth mentioning that has changed compared to the javascript example,
-is that we had to put `withParams()` before the `create()` method.
-This is necessary to tell the `create()` method the type (e.g. DemoStyles) of the `params` property.
+Let's take a look at the [Basic usage](#-basic-usage) example converted to Typescript (see below).
+The only part worth mentioning that has changed compared to the Javascript example
+is that we put `withParams()` in front of the `create()` method.
+This is necessary to tell the `create()` method the desired type (e.g. `DemoStyles`) of the `params` property.
 <details>
   <summary>Why `withParams()`?</summary>
 
-If you are wondering why we need to go the extra step 
-and use `withParams()` to specify the `params` generic.
+In case you are wondering why we need to go this extra step, 
+and use `withParams<ParamsType>()` to specify the `params` generic.
 Instead of just specifying the `generic` in the `create()` method like `create<ParamsType>()`.
 
 Well, that's because [partial type inference](https://stackoverflow.com/questions/63678306/typescript-partial-type-inference)
 is not possible in Typescript.
-If we were to specify the `params` generic in the `create()` method (like `create<ParamsType>()`),
-which, by the way, is possible, 
-we would lose the type inference of the stylesheet object 
-and would have to specify it manually (e.g. `create<ParamsType, StylesheetType>()`).
+If we were to specify the `params` generic in the `create()` method (like `create<ParamsType>()`)
+which, by the way, is possible
+we would lose the type inference of the stylesheet object.
+Thus, we would have to specify it manually (e.g. `create<ParamsType, StyleSheetType>()`).
+```ts
+import React from 'react';
+import { css } from '@emotion/react';
+import styleSheet from "./styles";
+import { StyleItem } from 'create-styles';
+
+type DemoStyles = {
+    color: string;
+    fontSize: number;
+}
+
+type DemoStyleSheet = {
+    root: StyleItem;
+    text: StyleItem;
+    button: StyleItem;
+}
+
+const useStyles = styleSheet.create<DemoStyles, DemoStyleSheet>(
+    ({theme, params}) => ({
+        root: {
+            backgroundColor: params.color,
+            "&:hover": {
+                backgroundColor: theme.primaryColor,
+            },
+        },
+        text: /* More Styles */,
+        button: /* More Styles */
+    }),
+);
+```
 
 </details>
 
 ```ts
 import React from 'react';
-import {css} from '@emotion/react';
+import { css } from '@emotion/react';
 import styleSheet from "./styles";
 
 type DemoStyles = {
@@ -224,19 +251,20 @@ type DemoStyles = {
 }
 
 // Specify dynamic styles and access them later in any React Component 
-// using the returned 'useStyles()' hook.
+// with the returned 'useStyles()' hook.
 const useStyles = styleSheet
   .withParams<DemoStyles>() // <- CHANGE | Specify the 'params' type as generic
   .create(
     ({theme, params}) => ({
-        // Styles of the specified classes can be created using a css object, ..
+        // Styles of the specified selectors can be created using a css object, ..
         root: {
             backgroundColor: params.color,
             "&:hover": {
                 backgroundColor: theme.primaryColor,
             },
         },
-        // .. or the common 'css()' method of '@emotion/react'
+        
+        // .. or the common 'css()' method provided by '@emotion/react'
         text: css`
            font-weight: bold;
            font-size: ${params.fontSize}px;
@@ -245,14 +273,14 @@ const useStyles = styleSheet
     }),
 );
 ```
-In the actual component where we include the stylesheet,
-we do not need to make any changes to achieve full typesafety.
+In the actual Component where we include the created stylesheet with the `useStyles()` hook,
+we don't need to make any adjustments to achieve full type safety.
 ```tsx
 export const Demo: React.FC<TDemoProps> = (props) => {
     const { className } = props;
     const [color, setColor] = useState("red");
 
-    // Use the created 'useStyles()' hook to access the specified styles as classes
+    // Use the created 'useStyles()' hook to access the specified styles as class names
     // and some utility functions like 'cx()' for merging class names.
     const { classes, cx } = useStyles({ color, fontSize: 10 });
 
@@ -267,11 +295,11 @@ export const Demo: React.FC<TDemoProps> = (props) => {
 
 ## ⚗️ Composition and nested selectors
 
-To use a selector (e.g. 'button' styles) in other parts of the stylesheet,
+To use a selector (e.g. `button` styles) in other parts of the stylesheet,
 we need to create a reference to it.
 This is necessary because the created `useStyles()` hook uses scoped class names
 to represent the specified stylesheet.
-An established reference created to a selector (e.g. 'prefix-ref_button_1'), however, remains static.
+An established reference created to a selector (e.g. `prefix-ref_button_1`), however, remains static.
 In order to create such a reference, we can use the `createRef()` method,
 which is given to the `create()` method.
 ```jsx
@@ -336,16 +364,16 @@ const Demo = () => {
 
 ## 🎥 Keyframes
 
-You can define animations using the [`keyframes`](https://emotion.sh/docs/keyframes#gatsby-focus-wrapper) helper from `@emotion/react`. 
+We can define animations using the [`keyframes`](https://emotion.sh/docs/keyframes#gatsby-focus-wrapper) helper from `@emotion/react`. 
 `keyframes` takes in a *css keyframe* definition 
-and returns an object you can use in the corresponding styles. 
-You can use strings or objects just like `css` to create such *css keyframes*.
+and returns an object we can use in the corresponding styles. 
+We can use strings or objects just like `css` to create such *css keyframes*.
 ```jsx
 import React from 'react';
 import { keyframes } from '@emotion/react';
 import { styleSheet } from "./styles";
 
-// Create keyframes with the 'keyframes()' method from '@emotion/react'
+// Define keyframes with the 'keyframes()' method from '@emotion/react'
 const bounce = keyframes`
   from, 20%, 53%, 80%, to {
     transform: translate3d(0,0,0);
@@ -367,7 +395,7 @@ const bounce = keyframes`
 const useStyles = styleSheet.create(({theme}) => ({
   container: {
     textAlign: 'center',
-    // Use specified 'bounce' keyframes in the 'container' styles  
+    // Use created 'bounce' keyframes in the 'container' styles  
     animation: `${bounce} 3s ease-in-out infinite`,
   },
 }));
@@ -381,15 +409,16 @@ const Demo = () => {
 
 ## 🌍 Global styles
 
-Sometimes you might want to insert `global css` styles. 
-You can use the `<GlobalStyles />` component to do this.
-```tsx
+Sometimes we might want to insert `global css` styles. 
+We can use the `<GlobalStyles />` component to do this.
+```jsx
 import React from 'react';
 import { GlobalStyles } from 'create-styles';
 
-export function App() {
+const App = () => {
   return (
       <>
+          {/* Specify global Styles at the root of your App */}
           <GlobalStyles
               styles={{
                   '*, *::before, *::after': {
@@ -403,6 +432,8 @@ export function App() {
                   },
               }}
           />
+
+          {/* The actual App */}
           <YourApp />
       </>
   );
@@ -412,13 +443,15 @@ export function App() {
 
 ## 🌈 `normalize.css`
 
-In a web environment it is often necessary to 'normalize'
-(Makes browsers render all elements more consistently and in line with modern standards) the `css`.
-The `NormalizeCss` component sets the normalized styles specified in [normalize.css](https://necolas.github.io/normalize.css/) globally.
-```tsx
-import {NormalizeCSS} from 'create-styles';
+In a web environment it is often necessary to 'normalize' the `css`,
+which makes the browsers render all elements more consistently 
+and in line with modern standards.
+The `NormalizeCss` Component sets the normalized styles 
+specified in [normalize.css](https://necolas.github.io/normalize.css/) globally.
+```jsx
+import { NormalizeCSS } from 'create-styles';
 
-function App() {
+const App = () => {
     return (
         <>
           <NormalizeCSS />
@@ -432,10 +465,10 @@ function App() {
 ## ✍️ Inline styles
 
 Often we need to create reusable Components
-that should be customizable later on among other things with inline styles.
-You can easily make Components customizable with inline styles
-by specifying the `styles` property (e.g. partial of specified stylesheet) 
-in the `useStyles()` hook's configuration object. 
+that should be customizable later on, among other things with inline styles.
+We can easily make Components customizable with inline styles
+by specifying the `styles` property (e.g. partial of specified stylesheet)
+in the `useStyles()` hook's configuration object.
 
 #### `Button.tsx`
 
@@ -461,8 +494,8 @@ type ButtonStyles = {
     radius: number;
 };
 
-// Create a type that represents the created stylesheet type (extracted from the 'useStyles()' hook).
-// This type can be used to add a typesafe styles property to the Button component.
+// Create type that represents the created stylesheet type (extracted from the 'useStyles()' hook).
+// This type can be used to add a typesafe 'styles' property to the Button component.
 export type ExtractedStylesType = ExtractStylesType<typeof useStyles>;
 
 export const Button: React.FC<ButtonProps> = (props) => {
@@ -478,23 +511,23 @@ export const Button: React.FC<ButtonProps> = (props) => {
 };
 
 type ButtonProps = {
-  color?: string;
-  radius?: number;
-  styles?: ExtractedStylesType; // Complete typesafety based on the created stylesheet
-  onClick: () => void;
+    color?: string;
+    radius?: number;
+    styles?: ExtractedStylesType; // Specify the 'styles' prop with full type safety based on the created stylesheet
+    onClick: () => void;
 };
 ```
 
-#### `./MyComponent.tsx`
+#### `./Demo.tsx`
 
-Use the created `Button` component and specify `inline` styles 
-using the `styles` property.
+Use the created `Button` Component and specify `inline` styles 
+with the `styles` property.
 ```tsx
 import React from 'react';
 import { css } from '@emotion/react';
 import { Button } from './Button';
 
-const MyComponent: React.FC = () => {
+const Demo: React.FC = () => {
   return (
     <div>
         <Button
@@ -541,12 +574,13 @@ const MyComponent: React.FC = () => {
 | Styling with `Emotion` styles                 | ✅                | ❌                        |
     
 ### Why `dynamic-styles` and not just using [`tss-react`](https://github.com/garronej/tss-react/blob/main/README.md)?
-Because `tss-react` was explicitly designed as a replacement for the `makeStyle` API 
-deprecated in Material UI 5 and thus isn't optimized for the general use (without Material UI). 
+
+Because `tss-react` was explicitly designed as a replacement for the `makeStyle()` API 
+deprecated in Material UI 5 and thus isn't optimized for general use (without Material UI). 
 Also, did it not meet all my needs, such as creating styles with the `css()` method provided by `Emotion` 
 and wasn't fully typesafe.
 ```ts
-const useStyles = createStyles()((theme, params) => ({
+const useStyles = styleSheet.create((theme, params) => ({
     root: css`
        // Write styles as in CSS and not in the form of an object
     `,
@@ -558,4 +592,5 @@ const useStyles = createStyles()((theme, params) => ({
 ## 🎉 Inspired by:
 
 The syntax of `dynamic-styles` is inspired by the [React Native Stylesheet API](https://reactnative.dev/docs/stylesheet).
-Under the hood we also got some inspiration from [TSS-React](https://github.com/garronej/tss-react) and [Mantine-Styles](https://github.com/mantinedev/mantine/tree/master/src/mantine-styles).
+Under the hood, we have been partly inspired by [TSS-React](https://github.com/garronej/tss-react) 
+and [Mantine-Styles](https://github.com/mantinedev/mantine/tree/master/src/mantine-styles).
