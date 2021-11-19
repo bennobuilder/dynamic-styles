@@ -7,13 +7,12 @@ import type { StyleItem } from './StyleSheet';
 // Inspired by
 // https://emotion.sh/docs/class-names
 // https://github.dev/emotion-js/emotion/blob/main/packages/react/src/class-names.js
-// https://www.youtube.com/watch?v=vKJpN5FAeF4
 export class CssFactory {
   public key: string;
   private refPropertyName = 'ref';
 
   /**
-   * todo
+   *  Factory for creating emotion-based `css` utilities.
    *
    * @private
    * @param key - Key/Name identifier of the CssFactory.

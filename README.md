@@ -192,8 +192,27 @@ const Demo: React.FC = () => {
 
 ## 🟦 Typescript
 
-TODO
-Example from [Basic usage](#-basic-usage)
+The `dynamic-styles` API is fully type-safe.
+Let's take a look at the [Basic usage](#-basic-usage) example converted to Typescript.
+The only part worth mentioning that has changed compared to the javascript example,
+is that we had to put `withParams()` before the `create()` method.
+This is necessary to tell the `create()` method the type (e.g. DemoStyles) of the `params` property.
+<details>
+  <summary>Why `withParams()`?</summary>
+
+If you are wondering why we need to go the extra step 
+and use `withParams()` to specify the `params` generic.
+Instead of just specifying the `generic` in the `create()` method like `create<ParamsType>()`.
+
+Well, that's because [partial type inference](https://stackoverflow.com/questions/63678306/typescript-partial-type-inference)
+is not possible in Typescript.
+If we were to specify the `params` generic in the `create()` method (like `create<ParamsType>()`),
+which, by the way, is possible, 
+we would lose the type inference of the stylesheet object 
+and would have to specify it manually (e.g. `create<ParamsType, StylesheetType>()`).
+
+<details/>
+
 ```ts
 import React from 'react';
 import {css} from '@emotion/react';
@@ -207,16 +226,17 @@ type DemoStyles = {
 // Specify dynamic styles and access them later in any React Component 
 // using the returned 'useStyles()' hook.
 const useStyles = styleSheet
-  .withParams<DemoStyles>()
+  .withParams<DemoStyles>() // <- CHANGE | Specify the 'params' type as generic
   .create(
     ({theme, params}) => ({
+        // Styles of the specified classes can be created using a css object, ..
         root: {
             backgroundColor: params.color,
             "&:hover": {
                 backgroundColor: theme.primaryColor,
             },
         },
-      
+        // .. or the common 'css()' method of '@emotion/react'
         text: css`
            font-weight: bold;
            font-size: ${params.fontSize}px;
@@ -225,8 +245,8 @@ const useStyles = styleSheet
     }),
 );
 ```
-We use the `useStyles()` hook, to access the specified styles in the corresponding Component
-and feed it with the corresponding dynamic parameters (`params`).
+In the actual component where we include the stylesheet,
+we do not need to make any changes to achieve full typesafety.
 ```tsx
 export const Demo: React.FC<TDemoProps> = (props) => {
     const { className } = props;
@@ -532,7 +552,7 @@ const useStyles = createStyles()((theme, params) => ({
     `,
 }));
 ```
-    
+
 </details>
 
 ## 🎉 Inspired by:
