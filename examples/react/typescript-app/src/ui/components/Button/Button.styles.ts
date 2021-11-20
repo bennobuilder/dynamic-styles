@@ -1,4 +1,4 @@
-import styleSheet from '../../../theme';
+import styleSheet from '../../../styles';
 import { UseStylesExtractStylesType } from 'dynamic-styles';
 
 const useStyles = styleSheet

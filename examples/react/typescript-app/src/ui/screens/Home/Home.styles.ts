@@ -1,5 +1,5 @@
 import { css, keyframes } from '@emotion/react';
-import { styleSheet } from '../../../theme';
+import { styleSheet } from '../../../styles';
 
 const bounce = keyframes`
   from, 20%, 53%, 80%, to {

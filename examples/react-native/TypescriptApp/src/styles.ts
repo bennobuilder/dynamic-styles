@@ -1,18 +1,6 @@
 import { createStyleSheet } from 'dynamic-styles';
 
-export type Theme = {
-  colors: {
-    white: string;
-    red: string;
-    green: string;
-    blue: string;
-  };
-  spacing: {
-    md: number;
-  };
-};
-
-export const useTheme = (): Theme => {
+export const useTheme = () => {
   return {
     colors: {
       white: '#FFFFFF',
