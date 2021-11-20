@@ -3695,11 +3695,6 @@ create-hmac@^1.1.0, create-hmac@^1.1.4, create-hmac@^1.1.7:
     safe-buffer "^5.0.1"
     sha.js "^2.4.8"
 
-"create-styles@file:.yalc/create-styles":
-  version "0.0.3"
-  dependencies:
-    clsx "^1.1.1"
-
 cross-spawn@7.0.3, cross-spawn@^7.0.0, cross-spawn@^7.0.2:
   version "7.0.3"
   resolved "https://registry.yarnpkg.com/cross-spawn/-/cross-spawn-7.0.3.tgz#f73a85b9d5d41d045551c177e2882d4ac85728a6"
@@ -4319,6 +4314,11 @@ duplexify@^3.4.2, duplexify@^3.6.0:
     inherits "^2.0.1"
     readable-stream "^2.0.0"
     stream-shift "^1.0.0"
+
+"dynamic-styles@file:.yalc/dynamic-styles":
+  version "0.0.6"
+  dependencies:
+    clsx "^1.1.1"
 
 ecc-jsbn@~0.1.1:
   version "0.1.2"

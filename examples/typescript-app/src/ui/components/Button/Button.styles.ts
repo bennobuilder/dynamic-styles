@@ -1,5 +1,5 @@
 import styleSheet from '../../../theme';
-import { UseStylesExtractStylesType } from 'create-styles';
+import { UseStylesExtractStylesType } from 'dynamic-styles';
 
 const useStyles = styleSheet
   .withParams<ButtonStyles>()
