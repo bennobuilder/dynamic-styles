@@ -10,7 +10,7 @@ export default StyleSheet;
  * @public
  * @param config - Configuration object
  */
-export function createStyleSheet<TTheme extends Record<string, unknown> = {}>(
+export function createStyleSheet<TTheme extends Record<string, any> = {}>(
   config: StyleSheetConfig<TTheme> = {}
 ) {
   return new StyleSheet<TTheme>(config);

@@ -51,8 +51,7 @@ $ npm install dynamic-styles @emotion/react
 ### ⛳️ Code Sandbox
 - [React Javascript](https://codesandbox.io/s/ds-basic-usage-js-nk55r)
 - [React Typescript](https://codesandbox.io/s/ds-basic-usage-ts-b25id)
-- [React-Native Javascript](todo)
-- (more coming soon)
+- [⚠️ **Not supported, yet**] [React-Native Javascript](https://snack.expo.dev/@bennodev/ds-basic-usage-js)
 
 ## 🪁 Basic usage
 

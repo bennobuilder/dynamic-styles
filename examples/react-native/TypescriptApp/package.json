@@ -1,0 +1,32 @@
+{
+  "name": "typescriptapp",
+  "version": "1.0.0",
+  "main": "node_modules/expo/AppEntry.js",
+  "scripts": {
+    "start": "expo start",
+    "android": "expo start --android",
+    "ios": "expo start --ios",
+    "web": "expo start --web",
+    "eject": "expo eject",
+    "install:dev:dynamic-styles": "yalc add dynamic-styles && yarn install",
+    "install:prod:dynamic-styles": "yarn add dynamic-styles && yarn install"
+  },
+  "dependencies": {
+    "@emotion/native": "^11.0.0",
+    "@emotion/react": "^11.6.0",
+    "dynamic-styles": "file:.yalc/dynamic-styles",
+    "expo": "~43.0.2",
+    "expo-status-bar": "~1.1.0",
+    "react": "17.0.1",
+    "react-dom": "17.0.1",
+    "react-native": "0.64.3",
+    "react-native-web": "0.17.1"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.12.9",
+    "@types/react": "~17.0.21",
+    "@types/react-native": "~0.64.12",
+    "typescript": "~4.3.5"
+  },
+  "private": true
+}
