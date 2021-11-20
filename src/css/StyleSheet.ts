@@ -5,7 +5,7 @@ import { useGuaranteedMemo } from '../hooks/useGuaranteedMemo';
 import createCache, { EmotionCache, Options } from '@emotion/cache';
 import { CacheContext } from '../components';
 
-export class StyleSheet<TTheme extends Record<string, unknown> = {}> {
+export class StyleSheet<TTheme extends Record<string, any> = {}> {
   // Theme the Stylesheet works with
   public useTheme: () => TTheme;
   // Key/Name identifier of the StyleSheet
@@ -44,7 +44,7 @@ export class StyleSheet<TTheme extends Record<string, unknown> = {}> {
    * @public
    */
   public withParams<
-    TParams extends Record<string, unknown> = Record<string, unknown>
+    TParams extends Record<string, any> = Record<string, any>
   >() {
     return {
       create: <TStyles extends StylesData = StylesData>(
@@ -80,7 +80,7 @@ export class StyleSheet<TTheme extends Record<string, unknown> = {}> {
    * @param styles - Stylesheet to be transferred into class names.
    */
   public create<
-    TParams extends Record<string, unknown> = Record<string, unknown>,
+    TParams extends Record<string, any> = Record<string, any>,
     TStyles extends StylesData = StylesData
   >(styles: StylesType<TParams, TStyles, TTheme, true>) {
     return this.createStyles<TParams, TStyles, true>(true, styles);
@@ -95,7 +95,7 @@ export class StyleSheet<TTheme extends Record<string, unknown> = {}> {
    * @param styles - Stylesheet to be transferred into class names.
    */
   private createStyles<
-    TParams extends Record<string, unknown> = Record<string, unknown>,
+    TParams extends Record<string, any> = Record<string, any>,
     TStyles extends StylesData = StylesData,
     TWithParams extends boolean = boolean
   >(
@@ -264,7 +264,7 @@ export type StyleItem =
 export type StylesData = Record<string, StyleItem>;
 
 type StylesType<
-  TParams extends Record<string, unknown>,
+  TParams extends Record<string, any>,
   TStyles extends StylesData,
   TTheme,
   TWithParams extends boolean
@@ -273,14 +273,14 @@ type StylesType<
   | ((props: StylesPropsType<TParams, TTheme, TWithParams>) => TStyles);
 
 type StylesPropsType<
-  TParams extends Record<string, unknown>,
+  TParams extends Record<string, any>,
   TTheme,
   TWithParams extends boolean
 > = TWithParams extends true
   ? BaseStylesPopsType<TParams, TTheme>
   : Omit<BaseStylesPopsType<TParams, TTheme>, 'params'>;
 
-type BaseStylesPopsType<TParams extends Record<string, unknown>, TTheme> = {
+type BaseStylesPopsType<TParams extends Record<string, any>, TTheme> = {
   theme: TTheme;
   params: TParams;
   createRef: (refName: string) => string;
@@ -292,7 +292,7 @@ export type ExpandedStylesType<TStyles extends StylesData, TTheme> =
   | ((theme: TTheme) => Partial<MapToX<TStyles, StyleItem>>);
 
 export type UseStylesType<
-  TParams extends Record<string, unknown> | undefined,
+  TParams extends Record<string, any> | undefined,
   TStyles extends StylesData,
   TTheme,
   TWithParams extends boolean
