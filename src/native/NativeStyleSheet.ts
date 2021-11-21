@@ -22,6 +22,60 @@ export class NativeStyleSheet<TTheme extends Record<string, any> = {}> {
   }
 
   /**
+   * Indicator for the chain methods to work with `params`.
+   *
+   * Typescript:
+   * Via this method the generic for the `params` object can be specified.
+   * The `params` generic had to be excluded from the actual `create()` method
+   * due to partial type inference of `TStyles`.
+   * https://stackoverflow.com/questions/63678306/typescript-partial-type-inference
+   *
+   * @public
+   */
+  public withParams<
+    TParams extends Record<string, any> = Record<string, any>
+  >() {
+    return {
+      create: <TStyles extends NativeStylesData = NativeStylesData>(
+        styles: NativeStylesType<TParams, TStyles, TTheme, true>
+      ): NativeUseStylesType<TParams, TStyles, TTheme, true> =>
+        this.createStyles<TParams, TStyles, true>(true, styles),
+    };
+  }
+
+  /**
+   * Indicator for the cain methods to work without `params`.
+   *
+   * @public
+   */
+  public withoutParams() {
+    return {
+      create: <TStyles extends NativeStylesData = NativeStylesData>(
+        styles: NativeStylesType<{}, TStyles, TTheme, false>
+      ): NativeUseStylesType<{}, TStyles, TTheme, false> =>
+        this.createStyles<{}, TStyles, false>(false, styles),
+    };
+  }
+
+  /**
+   * Transfers the (in object shape or emotion style) specified stylesheet
+   * into class names that can be accessed via the returned `useStyles()` hook.
+   *
+   * The returned `useStyles()` hook should be used in React components
+   * to access the generated style class names and other utilities
+   * for working with emotion-based class names.
+   *
+   * @public
+   * @param styles - Stylesheet to be transferred into class names.
+   */
+  public create<
+    TParams extends Record<string, any> = Record<string, any>,
+    TStyles extends NativeStylesData = NativeStylesData
+  >(styles: NativeStylesType<TParams, TStyles, TTheme, true>) {
+    return this.createStyles<TParams, TStyles, true>(true, styles);
+  }
+
+  /**
    * Internal helper to transfer the (in object shape or emotion style) specified stylesheet
    * into class names that can be accessed via the returned `useStyles()` hook.
    *
@@ -29,7 +83,7 @@ export class NativeStyleSheet<TTheme extends Record<string, any> = {}> {
    * @param withParams - Whether to create the stylesheet with params (Helper property for Typescript).
    * @param styles - Stylesheet to be transferred into class names.
    */
-  public createStyles<
+  private createStyles<
     TParams extends Record<string, any> = Record<string, any>,
     TStyles extends NativeStylesData = NativeStylesData,
     TWithParams extends boolean = boolean
