@@ -1,6 +1,9 @@
 import { StyleSheet, StyleSheetConfig } from './StyleSheet';
+import GlobalStyles from './GlobalStyles';
+import NormalizeCSS from './NormalizeCSS';
 
 export * from './StyleSheet';
+export { GlobalStyles, NormalizeCSS };
 
 export default StyleSheet;
 

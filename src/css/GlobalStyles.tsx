@@ -1,6 +1,6 @@
 import React from 'react';
 import * as ReactEmotion from '@emotion/react';
-import { StyleItem } from '../css/StyleSheet';
+import { StyleItem } from './index';
 
 // https://emotion.sh/docs/globals#gatsby-focus-wrapper
 const GlobalStyles: React.FC<GlobalStylesProps> = (props) => {

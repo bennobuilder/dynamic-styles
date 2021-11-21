@@ -1,4 +1,4 @@
-import { createStyleSheet } from 'dynamic-styles';
+import { NativeStyleSheet } from 'dynamic-styles';
 
 export const useTheme = () => {
   return {
@@ -14,6 +14,6 @@ export const useTheme = () => {
   };
 };
 
-export const styleSheet = createStyleSheet({ theme: useTheme });
+export const styleSheet = new NativeStyleSheet({ theme: useTheme });
 
 export default styleSheet;

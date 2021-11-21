@@ -3,15 +3,17 @@ import React from 'react';
 import { Text, View } from 'react-native';
 import styleSheet from './src/styles';
 import { css } from '@emotion/native';
-import { css as reactCss } from '@emotion/react';
 
-const useStyles = styleSheet.withParams().create(({ params }) => ({
+const useStyles = styleSheet.createStyles(true, ({ params }) => ({
   root: {
     flex: 1,
     backgroundColor: 'blue',
     alignItems: 'center',
     justifyContent: 'center',
   },
+  text: css`
+    color: red;
+  `,
 }));
 
 const App = () => {
@@ -23,14 +25,10 @@ const App = () => {
       background-color: red;
       font-weight: bold;
     `,
-    reactCss: reactCss`
-      background-color: red;
-      font-weight: bold;
-    `,
   });
 
   return (
-    <View>
+    <View style={classes.root}>
       <Text>Open up App.tsx to start working on your app!</Text>
       <StatusBar style="auto" />
     </View>

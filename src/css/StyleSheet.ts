@@ -1,9 +1,9 @@
 import React from 'react';
 import { CssFactory, CXType } from './CssFactory';
-import { Interpolation, SerializedStyles } from '@emotion/react';
+import { Interpolation } from '@emotion/react';
 import { useGuaranteedMemo } from '../hooks/useGuaranteedMemo';
 import createCache, { EmotionCache, Options } from '@emotion/cache';
-import { CacheContext } from '../components';
+import { CacheContext } from '../cache';
 
 export class StyleSheet<TTheme extends Record<string, any> = {}> {
   // Theme the Stylesheet works with
@@ -257,8 +257,7 @@ export type StyleSheetConfig<TTheme> = {
 };
 
 export type StyleItem =
-  | SerializedStyles // to do emotion based 'css' styles
-  | TemplateStringsArray // to do class name based styles
+  | TemplateStringsArray // to do emotion and class name based 'css' styles
   | Interpolation<any>; // to do emotion based 'object' styles
 
 export type StylesData = Record<string, StyleItem>;
@@ -369,6 +368,6 @@ export type UseStylesExtractStylesType<T> = T extends UseStylesType<
   ? ExpandedStylesType<TStyles, TTheme>
   : never;
 
-export type MapToX<T, X = any> = {
+type MapToX<T, X = any> = {
   [K in keyof T]: X;
 };
