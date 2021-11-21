@@ -66,22 +66,24 @@ export class NativeStyleSheet<TTheme extends Record<string, any> = {}> {
       ) as Partial<TStyles>;
 
       return React.useMemo(() => {
-        // Transform specified 'styles' into ReactNative StyleSheets
-        const classes: Record<string, ReactNativeStyle> = {};
+        // Transform specified 'styles' and 'expandedStyles' into ReactNative StyleSheets
+        const classes: Record<string, ReactNativeStyle[]> = {};
         for (const key of Object.keys(_styles)) {
-          classes[key] =
-            typeof _styles[key] === 'object'
+          // Add 'styles'
+          classes[key] = [
+            typeof _styles[key] !== 'string' // Not emotion style (`/* */`)
               ? css(_styles[key])
-              : (_styles[key] as any);
-        }
+              : (_styles[key] as any),
+          ];
 
-        // Transform '_expandedStyles' into ReactNative StyleSheets
-        const expandedClasses: Record<string, ReactNativeStyle> = {};
-        for (const key of Object.keys(_expandedStyles)) {
-          expandedClasses[key] =
-            typeof _expandedStyles[key] === 'object'
-              ? css(_expandedStyles[key])
-              : _expandedStyles[key];
+          // Add 'expandedStyles'
+          if (_expandedStyles[key] != null) {
+            classes[key].push(
+              typeof _expandedStyles[key] !== 'string' // Not emotion style (`/* */`)
+                ? css(_expandedStyles[key])
+                : _expandedStyles[key]
+            );
+          }
         }
 
         return {

@@ -37,8 +37,8 @@ const App = () => {
   });
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>React Native</Text>
+    <View style={classes.container}>
+      <Text style={classes.title}>React Native</Text>
       <StatusBar style="auto" />
     </View>
   );

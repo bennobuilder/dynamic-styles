@@ -151,7 +151,7 @@ export class StyleSheet<TTheme extends Record<string, any> = {}> {
         const classes: Record<string, string> = {};
         for (const key of Object.keys(_styles)) {
           classes[key] =
-            typeof _styles[key] !== 'string'
+            typeof _styles[key] !== 'string' // Not 'class name' and emotion style (`/* */`)
               ? css(_styles[key])
               : (_styles[key] as any);
         }
@@ -160,7 +160,7 @@ export class StyleSheet<TTheme extends Record<string, any> = {}> {
         const expandedClasses: Record<string, string> = {};
         for (const key of Object.keys(_expandedStyles)) {
           expandedClasses[key] = cx(
-            typeof _expandedStyles[key] !== 'string'
+            typeof _expandedStyles[key] !== 'string' // Not 'class name' and emotion style (`/* */`)
               ? css(_expandedStyles[key])
               : _expandedStyles[key],
             classNames
