@@ -1,7 +1,5 @@
 import React from 'react';
-import * as reactNative from 'react-native';
-import { Interpolation, ReactNativeStyle } from '@emotion/native';
-import { useGuaranteedMemo } from '../hooks/useGuaranteedMemo';
+import { css, Interpolation, ReactNativeStyle } from '@emotion/native';
 
 export class NativeStyleSheet<TTheme extends Record<string, any> = {}> {
   // Theme the Stylesheet works with
@@ -58,7 +56,6 @@ export class NativeStyleSheet<TTheme extends Record<string, any> = {}> {
       const name = _config.name;
 
       const theme = this.useTheme();
-      const { css } = this.useCss();
 
       const getStylesConfig = (
         withParams ? { theme, params: _params } : { theme }
@@ -70,7 +67,7 @@ export class NativeStyleSheet<TTheme extends Record<string, any> = {}> {
 
       return React.useMemo(() => {
         // Transform specified 'styles' into ReactNative StyleSheets
-        const classes: Record<string, string> = {};
+        const classes: Record<string, ReactNativeStyle> = {};
         for (const key of Object.keys(_styles)) {
           classes[key] =
             typeof _styles[key] === 'object'
@@ -79,7 +76,7 @@ export class NativeStyleSheet<TTheme extends Record<string, any> = {}> {
         }
 
         // Transform '_expandedStyles' into ReactNative StyleSheets
-        const expandedClasses: Record<string, string> = {};
+        const expandedClasses: Record<string, ReactNativeStyle> = {};
         for (const key of Object.keys(_expandedStyles)) {
           expandedClasses[key] =
             typeof _expandedStyles[key] === 'object'
@@ -88,26 +85,11 @@ export class NativeStyleSheet<TTheme extends Record<string, any> = {}> {
         }
 
         return {
-          classes: {},
+          classes,
           theme,
         };
       }, [_styles, _expandedStyles, name]);
     };
-  }
-
-  /**
-   * React Hook that returns the memorized `cx()` and `css()` method,
-   * that can be used to easily handle emotion based styles.
-   *
-   * @public
-   */
-  public useCss() {
-    return useGuaranteedMemo(
-      () => ({
-        css: (...args: any[]) => reactNative.StyleSheet.create(args),
-      }),
-      []
-    );
   }
 }
 

@@ -1,19 +1,27 @@
-import { StatusBar } from 'expo-status-bar';
 import React from 'react';
-import { Text, View } from 'react-native';
+import { Text, View, StyleSheet } from 'react-native';
+import { StatusBar } from 'expo-status-bar';
 import styleSheet from './src/styles';
 import { css } from '@emotion/native';
 
 const useStyles = styleSheet.createStyles(true, ({ params }) => ({
-  root: {
+  container: {
     flex: 1,
-    backgroundColor: 'blue',
-    alignItems: 'center',
-    justifyContent: 'center',
+    padding: 24,
+    backgroundColor: '#eaeaea',
   },
-  text: css`
-    color: red;
-  `,
+  title: {
+    marginTop: 16,
+    paddingVertical: 8,
+    borderWidth: 4,
+    borderColor: '#20232a',
+    borderRadius: 6,
+    backgroundColor: '#61dafb',
+    color: '#20232a',
+    textAlign: 'center',
+    fontSize: 30,
+    fontWeight: 'bold',
+  },
 }));
 
 const App = () => {
@@ -21,6 +29,7 @@ const App = () => {
 
   console.log({
     classes,
+    styles,
     nativeCss: css`
       background-color: red;
       font-weight: bold;
@@ -28,11 +37,31 @@ const App = () => {
   });
 
   return (
-    <View style={classes.root}>
-      <Text>Open up App.tsx to start working on your app!</Text>
+    <View style={styles.container}>
+      <Text style={styles.title}>React Native</Text>
       <StatusBar style="auto" />
     </View>
   );
 };
 
 export default App;
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    padding: 24,
+    backgroundColor: '#eaeaea',
+  },
+  title: {
+    marginTop: 16,
+    paddingVertical: 8,
+    borderWidth: 4,
+    borderColor: '#20232a',
+    borderRadius: 6,
+    backgroundColor: '#61dafb',
+    color: '#20232a',
+    textAlign: 'center',
+    fontSize: 30,
+    fontWeight: 'bold',
+  },
+});
