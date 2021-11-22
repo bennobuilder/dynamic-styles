@@ -43,9 +43,11 @@ const MyComponent = (props) => {
 ### 💻 Installation
 
 ```bash
-$ yarn add dynamic-styles @emotion/react
-# or
-$ npm install dynamic-styles @emotion/react
+# React
+$ yarn add @ds/react @emotion/react
+
+# React Native
+$ npm install @ds/native @emotion/react
 ```
 
 ### ⛳️ Code Sandbox
@@ -131,6 +133,7 @@ const Demo = (props) => {
 [Live Demo](https://codesandbox.io/s/ds-basic-usage-js-nk55r)
 
 ## 🔗 Classes merging with `cx()`
+> `@ds/react`
 
 To merge class names, we should use the `cx()` method returned by `useStyles()`.
 It has the same API as the popular [clsx](https://www.npmjs.com/package/clsx) package
@@ -194,6 +197,7 @@ const Demo = () => {
 [Live Demo](https://codesandbox.io/s/ds-class-merging-js-72de4)
 
 ## 🟦 Typescript
+> `@ds/react`, `@ds/native`
 
 The `dynamic-styles` API is fully type-safe.
 Let's take a look at the [Basic usage](#-basic-usage) example converted to Typescript (see below).
@@ -302,6 +306,7 @@ const Demo: React.FC<DemoProps> = (props) => {
 [Live Demo](https://codesandbox.io/s/ds-basic-usage-ts-b25id)
 
 ## ⚗️ Composition and nested selectors
+> `@ds/react`
 
 To use a selector (e.g. `button` styles) in other parts of the stylesheet,
 we need to create a reference to it.
@@ -373,6 +378,7 @@ const Demo = () => {
 [Live Demo](https://codesandbox.io/s/ds-composition-and-nested-selectors-js-m5wcb)
 
 ## 🎥 Keyframes
+> `@ds/react`, `@ds/native`
 
 We can define animations using the [`keyframes`](https://emotion.sh/docs/keyframes#gatsby-focus-wrapper) helper from `@emotion/react`. 
 `keyframes` takes in a *css keyframe* definition 
@@ -418,6 +424,7 @@ const Demo = () => {
 [Live Demo](https://codesandbox.io/s/ds-keyframes-js-vnoqw)
 
 ## 🌍 Global styles
+> `@ds/react`, `@ds/native`
 
 Sometimes we might want to insert `global css` styles. 
 We can use the `<GlobalStyles />` component to do this.
@@ -455,6 +462,7 @@ const App = () => {
 [Live Demo](https://codesandbox.io/s/ds-global-styles-js-sncu4)
 
 ## 🌈 `normalize.css`
+> `@ds/react`
 
 In a web environment it is often necessary to 'normalize' the `css`,
 which makes the browsers render all elements more consistently 
@@ -476,6 +484,7 @@ const App = () => {
 [Live Demo](https://codesandbox.io/s/ds-normalize-css-js-fzhof)
 
 ## ✍️ Inline styles
+> `@ds/react`, `@ds/native`
 
 Often we need to create reusable Components
 that should be customizable later on, among other things with inline styles.

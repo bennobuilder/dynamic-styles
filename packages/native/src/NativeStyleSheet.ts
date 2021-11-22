@@ -143,6 +143,12 @@ export class NativeStyleSheet<TTheme extends Record<string, any> = {}> {
         return {
           classes,
           theme,
+          cx: (...args: any[]) =>
+            args.map((value) =>
+              typeof value !== 'string' // Not emotion style (`/* */`)
+                ? css(value)
+                : value
+            ),
         };
       }, [_styles, _expandedStyles, name]);
     };
@@ -232,7 +238,13 @@ type NativeUseStylesConfigType<TStyles extends NativeStylesData, TTheme> = {
 
 type NativeUseStylesReturnType<TStyles extends NativeStylesData, TTheme> = {
   /**
-   * Class names keymap based on the styles key map
+   * Merges the specified styles.
+   *
+   * @param args - Arguments to be merged together.
+   */
+  cx: CXType;
+  /**
+   * React Native Styles keymap based on the styles key map
    * specified in the 'createStyles()' method.
    */
   classes: MapToX<TStyles, ReactNativeStyle>;
@@ -245,3 +257,5 @@ type NativeUseStylesReturnType<TStyles extends NativeStylesData, TTheme> = {
 type MapToX<T, X = any> = {
   [K in keyof T]: X;
 };
+
+export type CXType = (...args: any) => ReactNativeStyle[];
