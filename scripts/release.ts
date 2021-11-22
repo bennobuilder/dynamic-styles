@@ -2,10 +2,13 @@ import yargs from 'yargs';
 import { hideBin } from 'yargs/helpers';
 import simpleGit from 'simple-git';
 import mainPackageJson from '../package.json';
-import { Logger } from './Logger';
+import { Logger } from './utils/Logger';
 import { getIncrementedVersion } from './release/getIncrementedVersion';
 import chalk from 'chalk';
 import { updatePackagesVersion } from './release/setPackagesVersion';
+import { execa } from 'execa';
+import { getPackagesList } from './utils/getPackagesList';
+import { publishPackage } from './release/publishPackage';
 
 const logger = new Logger('release');
 const git = simpleGit();
@@ -19,7 +22,7 @@ const { argv } = yargs(hideBin(process.argv))
   .option('tag', {
     type: 'string',
     default: 'latest',
-    description: 'Tag',
+    description: 'Tag [https://dev.to/andywer/how-to-use-npm-tags-4lla]',
   })
   .option('skip-version-check', {
     type: 'boolean',
@@ -44,6 +47,7 @@ const { argv } = yargs(hideBin(process.argv))
 // Async wrapper method to use 'await'
 (async () => {
   const status = await git.status();
+  const packages = await getPackagesList();
 
   logger.info('Releasing all packages');
 
@@ -60,5 +64,39 @@ const { argv } = yargs(hideBin(process.argv))
     await updatePackagesVersion(packageVersion);
   }
 
-  // console.log({ status, incrementedVersion });
+  // Build packages
+  if (!argv['skip-build']) {
+    const startTime = Date.now();
+    logger.info(`Building packages ${packages.map((p) => p.name).join(', ')}`);
+
+    await execa('yarn', ['build']);
+    logger.success(
+      `All packages build successfully in ${chalk.magenta(
+        `${((Date.now() - startTime) / 1000).toFixed(2)}s`
+      )}`
+    );
+  }
+
+  // Release packages
+  if (!argv['skip-publish']) {
+    const startTime = Date.now();
+    logger.info('Publishing packages to npm');
+
+    // Publish packages
+    await Promise.all(
+      packages.map((p) =>
+        publishPackage({
+          path: p.path,
+          name: p.packageJson.name,
+          tag: argv.tag,
+        })
+      )
+    );
+
+    logger.success(
+      `All packages successfully published in ${chalk.magenta(
+        `${((Date.now() - startTime) / 1000).toFixed(2)}s`
+      )}`
+    );
+  }
 })();

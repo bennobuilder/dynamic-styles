@@ -1,4 +1,4 @@
-import { Logger } from '../Logger';
+import { Logger } from '../utils/Logger';
 import chalk from 'chalk';
 
 const logger = new Logger('increment-version');

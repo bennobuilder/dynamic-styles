@@ -9,9 +9,13 @@ export class Logger {
 
   public log(message: string, lineBreakCount = 1) {
     // https://stackoverflow.com/questions/4976466/difference-between-process-stdout-write-and-console-log-in-node-js
-    process.stdout.write(
+    this.write(
       `${chalk.cyan(`[${this.key}]`)} ${message}${'\n'.repeat(lineBreakCount)}`
     );
+  }
+
+  public write(message: string) {
+    process.stdout.write(message);
   }
 
   info(message: string, lineBreakCount = 1) {

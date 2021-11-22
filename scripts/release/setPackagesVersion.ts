@@ -1,27 +1,9 @@
 import path from 'path';
 import fs from 'fs-extra';
-import { Logger } from '../Logger';
+import { Logger } from '../utils/Logger';
+import { getRootPkgJsonDir } from '../utils/getRootPkgJsonDir';
 
 const logger = new Logger('write-version');
-
-/**
- * Retrieves the path to the root 'package.json'.
- *
- * https://stackoverflow.com/questions/10265798/determine-project-root-from-a-running-node-js-application
- */
-async function getRootPkgJsonDir() {
-  const nodeModulesPaths = module.paths;
-  for (const nodeModulePath of nodeModulesPaths) {
-    try {
-      const prospectivePkgJsonDir = path.dirname(nodeModulePath);
-      await fs.access(nodeModulePath, fs.constants.F_OK);
-      return prospectivePkgJsonDir;
-    } catch (e) {
-      // do nothing
-    }
-  }
-  return null;
-}
 
 /**
  * Write specified version to the 'package.json' at provided file path.
@@ -42,11 +24,6 @@ async function writeVersionToPkgJson(filePath: string, version: string) {
  */
 export async function updatePackagesVersion(version: string) {
   const rootPath = await getRootPkgJsonDir();
-
-  if (rootPath == null) {
-    logger.error('Failed to retrieve root path.');
-    return;
-  }
 
   // Update version in root 'package.json'
   await writeVersionToPkgJson(path.join(rootPath, '/package.json'), version);

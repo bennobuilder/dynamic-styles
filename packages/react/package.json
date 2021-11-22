@@ -1,6 +1,6 @@
 {
   "name": "@ds/react",
-  "version": "0.0.4",
+  "version": "0.0.1",
   "description": "Dynamic Css-in-Js styles engine, based on Emotion for React",
   "license": "MIT",
   "homepage": "https://github.com/bennodev19/dynamic-styles",

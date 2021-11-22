@@ -1,6 +1,6 @@
 {
   "name": "dynamic-styles",
-  "version": "0.0.4",
+  "version": "0.0.1",
   "private": true,
   "description": "Dynamic Css-in-Js styles engine, based on Emotion",
   "license": "MIT",
@@ -59,6 +59,7 @@
     "eslint-plugin-node": "^11.1.0",
     "eslint-plugin-prettier": "^4.0.0",
     "esno": "^0.12.1",
+    "execa": "^6.0.0",
     "fs-extra": "^10.0.0",
     "jest": "^27.3.1",
     "lerna": "^4.0.0",
