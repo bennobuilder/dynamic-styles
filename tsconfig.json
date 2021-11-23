@@ -1,5 +1,5 @@
 {
-  "extends": "./config/typescript/tsconfig.default.json",
+  "extends": "./config/types/tsconfig.default.json",
   "compilerOptions": {
     "resolveJsonModule": true,
     "rootDir": "."

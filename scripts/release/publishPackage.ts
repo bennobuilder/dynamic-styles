@@ -4,6 +4,40 @@ import chalk from 'chalk';
 
 const logger = new Logger('publish-package');
 
+async function checkLogin(externalRegistry: string) {
+  const args = ['whoami'];
+
+  if (externalRegistry) {
+    args.push('--registry', externalRegistry);
+  }
+
+  try {
+    const { stdout } = await execa('npm', args);
+    logger.info(`Logged in as user: '${stdout}'`);
+  } catch (e: any) {
+    logger.error('You must be logged in. Use `npm login` and try again.', 2);
+    logger.write(chalk.red`${e?.message}\n`);
+  }
+}
+
+function getPackagePublishArguments(config: PkgPublish) {
+  const args = ['publish'];
+
+  if (config.contents != null) {
+    args.push(config.contents);
+  }
+
+  if (config.tag != null) {
+    args.push('--tag', config.tag);
+  }
+
+  return args;
+}
+
+function pkgPublish(pkgManager: 'npm' | 'yarn', config: PkgPublish) {
+  return execa(pkgManager, getPackagePublishArguments(config));
+}
+
 /**
  * Publishes the specified packages to npm.
  *
@@ -12,10 +46,11 @@ const logger = new Logger('publish-package');
 export async function publishPackage(config: PublishPackageConfig) {
   const { path, name, tag } = config;
   try {
-    await execa('yarn', ['publish', path, '--tag', tag]);
+    await checkLogin('https://registry.npmjs.org/');
+    await pkgPublish('npm', { contents: path, tag });
     logger.success(`Package ${chalk.cyan(name)} was published`);
   } catch (e: any) {
-    logger.error(`Failed to publish package ${chalk.red(name)}`);
+    logger.error(`Failed to publish package ${chalk.red(name)}`, 2);
     logger.write(chalk.red`${e?.message}\n`);
     process.exit(1);
   }
@@ -31,11 +66,20 @@ type PublishPackageConfig = {
    */
   name: string;
   /**
-   * Providing a tag to yarn publish lets you publish packages with a specific tag.
-   * For example, if you do a yarn publish --tag beta,
-   * and your package is named blorp, then someone else can install that package with yarn add blorp@beta.
+   * Publish under a given dist-tag
    *
    * [Learn more..](https://classic.yarnpkg.com/en/docs/cli/publish#toc-yarn-publish-tag)
    */
   tag: string;
+};
+
+type PkgPublish = {
+  /**
+   * Subdirectory to publish.
+   */
+  contents?: string;
+  /**
+   * Publish under a given dist-tag.
+   */
+  tag?: string;
 };

@@ -1,7 +1,8 @@
 import yargs from 'yargs';
 import { hideBin } from 'yargs/helpers';
 import simpleGit from 'simple-git';
-import mainPackageJson from '../package.json';
+import githubRelease from 'new-github-release-url';
+import open from 'open';
 import { Logger } from './utils/Logger';
 import { getIncrementedVersion } from './release/getIncrementedVersion';
 import chalk from 'chalk';
@@ -9,6 +10,10 @@ import { updatePackagesVersion } from './release/setPackagesVersion';
 import { execa } from 'execa';
 import { getPackagesList } from './utils/getPackagesList';
 import { publishPackage } from './release/publishPackage';
+
+import mainPackageJson from '../package.json';
+
+// NOTE: this whole process can also be done by simply using 'np' (https://github.com/sindresorhus/np)
 
 const logger = new Logger('release');
 const git = simpleGit();
@@ -22,7 +27,7 @@ const { argv } = yargs(hideBin(process.argv))
   .option('tag', {
     type: 'string',
     default: 'latest',
-    description: 'Tag [https://dev.to/andywer/how-to-use-npm-tags-4lla]',
+    description: 'Publish under a given dist-tag.',
   })
   .option('skip-version-check', {
     type: 'boolean',
@@ -46,14 +51,13 @@ const { argv } = yargs(hideBin(process.argv))
 
 // Async wrapper method to use 'await'
 (async () => {
-  const status = await git.status();
   const packages = await getPackagesList();
 
   logger.info('Releasing all packages');
 
   // Increment Version
   let packageVersion = mainPackageJson.version;
-  if (!argv.skipVersionCheck) {
+  if (!argv['skip-version-check']) {
     packageVersion =
       getIncrementedVersion(packageVersion, {
         type: argv._[0] as any,
@@ -67,7 +71,9 @@ const { argv } = yargs(hideBin(process.argv))
   // Build packages
   if (!argv['skip-build']) {
     const startTime = Date.now();
-    logger.info(`Building packages ${packages.map((p) => p.name).join(', ')}`);
+    logger.info(
+      `Building packages ${packages.map((p) => chalk.gray(p.name)).join(', ')}`
+    );
 
     await execa('yarn', ['build']);
     logger.success(
@@ -102,4 +108,14 @@ const { argv } = yargs(hideBin(process.argv))
 
   // Git
   await git.commit(`[release] Version: ${packageVersion}`);
+  await git.push();
+
+  open(
+    githubRelease({
+      user: 'bennodev19',
+      repo: 'dynamic-styles',
+      tag: packageVersion,
+      title: packageVersion,
+    })
+  );
 })();
