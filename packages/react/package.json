@@ -1,5 +1,5 @@
 {
-  "name": "@ds/react",
+  "name": "@dyst/react",
   "version": "0.0.2",
   "description": "Dynamic Css-in-Js styles engine, based on Emotion for React",
   "license": "MIT",
@@ -44,7 +44,7 @@
     "url": "https://github.com/bennodev19/dynamic-styles"
   },
   "bugs": {
-    "url": "https://github.com/agile-ts/agile/issues"
+    "url": "https://github.com/bennodev19/dynamic-styles/issues"
   },
   "files": [
     "dist",

@@ -1,5 +1,5 @@
 {
-  "name": "@ds/native",
+  "name": "@dyst/native",
   "version": "0.0.2",
   "description": "Dynamic Css-in-Js styles engine, based on Emotion for React-Native",
   "license": "MIT",
@@ -27,14 +27,12 @@
     "lint": "eslint src/**/*",
     "install:clean": "shx rm -rf dist && shx rm -rf node_modules && yarn install"
   },
-  "dependencies": {
-    "clsx": "^1.1.1"
-  },
+  "dependencies": {},
   "peerDependencies": {
     "@emotion/native": "^11.0.0",
     "@emotion/react": "^11.5.0",
     "react": ">=16.8.0",
-    "react-native": ">=0.60.0"
+    "react-native": "^0.66.3"
   },
   "devDependencies": {},
   "publishConfig": {
@@ -45,7 +43,7 @@
     "url": "https://github.com/bennodev19/dynamic-styles"
   },
   "bugs": {
-    "url": "https://github.com/agile-ts/agile/issues"
+    "url": "https://github.com/bennodev19/dynamic-styles/issues"
   },
   "files": [
     "dist",

@@ -16,7 +16,8 @@
   "scripts": {
     "build": "lerna run build",
     "prepare": "lerna run prepare",
-    "_release": "yarn run prepare && esno scripts/release",
+    "release:prepare": "yarn run test",
+    "_release": "yarn run release:prepare && esno scripts/release",
     "release:patch": "yarn run _release patch",
     "release:minor": "yarn run _release minor",
     "release:major": "yarn run _release major",

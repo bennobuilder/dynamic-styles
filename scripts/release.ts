@@ -9,7 +9,7 @@ import chalk from 'chalk';
 import { updatePackagesVersion } from './release/setPackagesVersion';
 import { execa } from 'execa';
 import { getPackagesList } from './utils/getPackagesList';
-import { publishPackage } from './release/publishPackage';
+import { checkLogin, publishPackage } from './release/publishPackage';
 
 import mainPackageJson from '../package.json';
 
@@ -53,7 +53,11 @@ const { argv } = yargs(hideBin(process.argv))
 (async () => {
   const packages = await getPackagesList();
 
-  logger.info('Releasing all packages');
+  logger.info(
+    `Releasing all packages: ${packages
+      .map((p) => chalk.gray(p.name))
+      .join(', ')}`
+  );
 
   // Increment Version
   let packageVersion = mainPackageJson.version;
@@ -71,9 +75,7 @@ const { argv } = yargs(hideBin(process.argv))
   // Build packages
   if (!argv['skip-build']) {
     const startTime = Date.now();
-    logger.info(
-      `Building packages ${packages.map((p) => chalk.gray(p.name)).join(', ')}`
-    );
+    logger.info(`Building packages`);
 
     await execa('yarn', ['build']);
     logger.success(
@@ -87,6 +89,8 @@ const { argv } = yargs(hideBin(process.argv))
   if (!argv['skip-publish']) {
     const startTime = Date.now();
     logger.info('Publishing packages to npm');
+
+    if (!(await checkLogin('https://registry.npmjs.org/'))) return;
 
     // Publish packages
     await Promise.all(
