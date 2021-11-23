@@ -9,9 +9,10 @@ import chalk from 'chalk';
 import { updatePackagesVersion } from './release/setPackagesVersion';
 import { execa } from 'execa';
 import { getPackagesList } from './utils/getPackagesList';
-import { checkLogin, publishPackage } from './release/publishPackage';
+import { publishPackage } from './release/publishPackage';
 
 import mainPackageJson from '../package.json';
+import { checkAuth } from './release/checkAuth';
 
 // NOTE: this whole process can also be done by simply using 'np' (https://github.com/sindresorhus/np)
 
@@ -88,9 +89,11 @@ const { argv } = yargs(hideBin(process.argv))
   // Release packages
   if (!argv['skip-publish']) {
     const startTime = Date.now();
+    const registry = 'https://registry.npmjs.org/';
     logger.info('Publishing packages to npm');
 
-    if (!(await checkLogin('https://registry.npmjs.org/'))) return;
+    // Check Login
+    if (!(await checkAuth(registry))) return;
 
     // Publish packages
     await Promise.all(
@@ -99,6 +102,7 @@ const { argv } = yargs(hideBin(process.argv))
           path: p.path,
           name: p.packageJson.name,
           tag: argv.tag,
+          registry,
         })
       )
     );

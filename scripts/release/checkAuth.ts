@@ -2,9 +2,9 @@ import { execa } from 'execa';
 import chalk from 'chalk';
 import { Logger } from '../utils/Logger';
 
-const logger = new Logger('publish-package');
+const logger = new Logger('check-auth');
 
-export async function checkLogin(registry: string): Promise<false | string> {
+export async function checkAuth(registry: string): Promise<false | string> {
   const args = ['whoami'];
 
   if (registry) {

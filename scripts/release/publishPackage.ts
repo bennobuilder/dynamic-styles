@@ -4,25 +4,6 @@ import chalk from 'chalk';
 
 const logger = new Logger('publish-package');
 
-export async function checkLogin(externalRegistry: string): Promise<boolean> {
-  const args = ['whoami'];
-
-  if (externalRegistry) {
-    args.push('--registry', externalRegistry);
-  }
-
-  try {
-    const { stdout } = await execa('npm', args);
-    logger.info(`Logged in as user: '${stdout}'`);
-    return true;
-  } catch (e: any) {
-    logger.error('You must be logged in. Use `npm login` and try again.', 2);
-    logger.write(chalk.red`${e?.message}\n`);
-  }
-
-  return false;
-}
-
 function getPackagePublishArguments(config: PkgPublish) {
   const args = ['publish'];
 
@@ -32,6 +13,10 @@ function getPackagePublishArguments(config: PkgPublish) {
 
   if (config.tag != null) {
     args.push('--tag', config.tag);
+  }
+
+  if (config.registry != null) {
+    args.push('--registry', config.registry);
   }
 
   return args;
@@ -47,9 +32,13 @@ function pkgPublish(pkgManager: 'npm' | 'yarn', config: PkgPublish) {
  * @param config - Configuration object
  */
 export async function publishPackage(config: PublishPackageConfig) {
-  const { path, name, tag } = config;
+  const { path, name, tag, registry = 'https://registry.npmjs.org' } = config;
   try {
-    await pkgPublish('npm', { contents: path, tag });
+    await pkgPublish('npm', {
+      contents: path,
+      tag,
+      registry: registry,
+    });
     logger.success(`Package ${chalk.cyan(name)} was published`);
   } catch (e: any) {
     logger.error(`Failed to publish package ${chalk.red(name)}`, 2);
@@ -73,6 +62,12 @@ type PublishPackageConfig = {
    * [Learn more..](https://classic.yarnpkg.com/en/docs/cli/publish#toc-yarn-publish-tag)
    */
   tag: string;
+  /**
+   * Registry to publish the package at.
+   *
+   * @default 'https://registry.npmjs.org'
+   */
+  registry?: string;
 };
 
 type PkgPublish = {
@@ -84,4 +79,8 @@ type PkgPublish = {
    * Publish under a given dist-tag.
    */
   tag?: string;
+  /**
+   * Registry to publish the package at.
+   */
+  registry?: string;
 };
