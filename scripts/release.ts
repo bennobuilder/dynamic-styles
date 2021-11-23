@@ -92,7 +92,7 @@ const { argv } = yargs(hideBin(process.argv))
     const registry = 'https://registry.npmjs.org/';
     logger.info('Publishing packages to npm');
 
-    // Check Login
+    // Check Auth Status
     if (!(await checkAuth(registry))) return;
 
     // Publish packages

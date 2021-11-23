@@ -1,13 +1,13 @@
-# 🏃‍♀ Dynamic Styles [`@ds/react`]
+# 🏃‍♀ Dynamic Styles
 
 <img src="https://raw.githubusercontent.com/bennodev19/dynamic-styles/master/static/banner.png" alt="Banner">
 <div>
     <i>✨ Dynamic Css-in-Js styles engine, based on <a href="https://emotion.sh/">Emotion<a/></i>
     <br>
     <br>
-    <img src="https://img.shields.io/bundlephobia/minzip/@ds/react">
-    <img src="https://img.shields.io/npm/dw/@ds/react">
-    <img src="https://img.shields.io/npm/l/@ds/react">
+    <img src="https://img.shields.io/bundlephobia/minzip/@dyst/react">
+    <img src="https://img.shields.io/npm/dw/@dyst/react">
+    <img src="https://img.shields.io/npm/l/@dyst/react">
 </div>
 
 ---
@@ -43,9 +43,9 @@ const MyComponent = (props) => {
 ### 💻 Installation
 
 ```bash
-$ yarn add @ds/react @emotion/react @emotion/native
+$ yarn add @dyst/react @emotion/react @emotion/native
 # or
-$ npm install @ds/react @emotion/react @emotion/native
+$ npm install @dyst/react @emotion/react @emotion/native
 ```
 
 ### ⛳️ Code Sandbox

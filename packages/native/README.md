@@ -1,13 +1,13 @@
-# 🏃‍♀ Dynamic Styles [`@ds/native`]
+# 🏃‍♀ Dynamic Styles
 
 <img src="https://raw.githubusercontent.com/bennodev19/dynamic-styles/master/static/banner.png" alt="Banner">
 <div>
     <i>✨ Dynamic Css-in-Js styles engine, based on <a href="https://emotion.sh/">Emotion<a/></i>
     <br>
     <br>
-    <img src="https://img.shields.io/bundlephobia/minzip/@ds/native">
-    <img src="https://img.shields.io/npm/dw/@ds/native">
-    <img src="https://img.shields.io/npm/l/@ds/native">
+    <img src="https://img.shields.io/bundlephobia/minzip/@dyst/native">
+    <img src="https://img.shields.io/npm/dw/@dyst/native">
+    <img src="https://img.shields.io/npm/l/@dyst/native">
 </div>
 
 ---
@@ -41,13 +41,13 @@ const MyComponent = (props) => {
 ### 💻 Installation
 
 ```bash
-$ yarn add @ds/native @emotion/react @emotion/native
+$ yarn add @dyst/native @emotion/react @emotion/native
 # or
-$ npm install @ds/native @emotion/react @emotion/native
+$ npm install @dyst/native @emotion/react @emotion/native
 ```
 
 ### ⛳️ Code Sandbox
-- [⚠️ **Not supported, yet**] [React-Native Javascript](https://snack.expo.dev/@bennodev/ds-basic-usage-js)
+- [React-Native Javascript](https://snack.expo.dev/@bennodev/ds-basic-usage-js)
 
 ## 🪁 Basic usage
 

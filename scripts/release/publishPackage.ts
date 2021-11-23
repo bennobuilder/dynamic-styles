@@ -39,7 +39,7 @@ export async function publishPackage(config: PublishPackageConfig) {
       tag,
       registry: registry,
     });
-    logger.success(`Package ${chalk.cyan(name)} was published`);
+    logger.info(`Package ${chalk.cyan(name)} was published`);
   } catch (e: any) {
     logger.error(`Failed to publish package ${chalk.red(name)}`, 2);
     logger.write(chalk.red`${e?.message}\n`);

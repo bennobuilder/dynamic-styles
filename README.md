@@ -44,10 +44,10 @@ const MyComponent = (props) => {
 
 ```bash
 # React
-$ yarn add @ds/react @emotion/react
+$ yarn add @dyst/react @emotion/react
 
 # React Native
-$ npm install @ds/native @emotion/react
+$ npm install @dyst/native @emotion/react
 ```
 
 ### ⛳️ Code Sandbox

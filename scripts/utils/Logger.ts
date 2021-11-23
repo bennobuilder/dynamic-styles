@@ -23,10 +23,10 @@ export class Logger {
   }
 
   success(message: string, lineBreakCount = 1) {
-    this.log(`✅  ${chalk.green(message)}`, lineBreakCount);
+    this.log(`${chalk.green(`✅  ${message}`)}`, lineBreakCount);
   }
 
   error(message: string, lineBreakCount = 1) {
-    this.log(`❌  ${chalk.red(message)}`, lineBreakCount);
+    this.log(`${chalk.red(`❌  ${message}`)}`, lineBreakCount);
   }
 }
