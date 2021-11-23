@@ -2,7 +2,7 @@ import path from 'path';
 import fs from 'fs-extra';
 import { Logger } from './Logger';
 
-const logger = new Logger("const logger = new Logger('increment-version');");
+const logger = new Logger('get-root-pkg-json-dir');
 
 export const { getRootPkgJsonDir } = (() => {
   let prospectivePkgJsonDir: string | null = null;

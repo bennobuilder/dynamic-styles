@@ -99,4 +99,7 @@ const { argv } = yargs(hideBin(process.argv))
       )}`
     );
   }
+
+  // Git
+  await git.commit(`[release] Version: ${packageVersion}`);
 })();

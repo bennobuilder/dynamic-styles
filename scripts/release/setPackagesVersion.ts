@@ -1,9 +1,6 @@
 import path from 'path';
 import fs from 'fs-extra';
-import { Logger } from '../utils/Logger';
 import { getRootPkgJsonDir } from '../utils/getRootPkgJsonDir';
-
-const logger = new Logger('write-version');
 
 /**
  * Write specified version to the 'package.json' at provided file path.

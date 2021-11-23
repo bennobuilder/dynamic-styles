@@ -7,15 +7,15 @@ export class Logger {
     this.key = key;
   }
 
+  public write(message: string) {
+    process.stdout.write(message);
+  }
+
   public log(message: string, lineBreakCount = 1) {
     // https://stackoverflow.com/questions/4976466/difference-between-process-stdout-write-and-console-log-in-node-js
     this.write(
       `${chalk.cyan(`[${this.key}]`)} ${message}${'\n'.repeat(lineBreakCount)}`
     );
-  }
-
-  public write(message: string) {
-    process.stdout.write(message);
   }
 
   info(message: string, lineBreakCount = 1) {
