@@ -59,14 +59,13 @@ export class NativeStyleSheet<TTheme extends Record<string, any> = {}> {
 
   /**
    * Transfers the (in object shape or emotion style) specified stylesheet
-   * into class names that can be accessed via the returned `useStyles()` hook.
+   * into React-Native styles that can be accessed via the returned `useStyles()` hook.
    *
    * The returned `useStyles()` hook should be used in React components
-   * to access the generated style class names and other utilities
-   * for working with emotion-based class names.
+   * to access the generated React-Native styles.
    *
    * @public
-   * @param styles - Stylesheet to be transferred into class names.
+   * @param styles - Stylesheet to be transferred into React-Native styles.
    */
   public create<
     TParams extends Record<string, any> = Record<string, any>,
@@ -77,11 +76,11 @@ export class NativeStyleSheet<TTheme extends Record<string, any> = {}> {
 
   /**
    * Internal helper to transfer the (in object shape or emotion style) specified stylesheet
-   * into class names that can be accessed via the returned `useStyles()` hook.
+   * into React-Native styles that can be accessed via the returned `useStyles()` hook.
    *
    * @internal
    * @param withParams - Whether to create the stylesheet with params (Helper property for Typescript).
-   * @param styles - Stylesheet to be transferred into class names.
+   * @param styles - Stylesheet to be transferred into React-Native styles.
    */
   private createStyles<
     TParams extends Record<string, any> = Record<string, any>,
@@ -94,7 +93,7 @@ export class NativeStyleSheet<TTheme extends Record<string, any> = {}> {
     const getStyles = typeof styles === 'function' ? styles : () => styles;
 
     /**
-     * Hook for accessing the generated class names
+     * Hook for accessing the generated style names
      * based on the styles created in 'createStyles()'.
      *
      * @param params - Parameters to be passed to the style creation ('createStyles()') method.
@@ -106,7 +105,7 @@ export class NativeStyleSheet<TTheme extends Record<string, any> = {}> {
       ) as NativeUseStylesConfigType<TStyles, TTheme>;
       const _params = (withParams ? paramsOrConfig : undefined) as TParams;
 
-      const styles = _config.styles ?? {};
+      const expandedStyles = _config.styles ?? {};
       const name = _config.name;
 
       const theme = this.useTheme();
@@ -116,15 +115,17 @@ export class NativeStyleSheet<TTheme extends Record<string, any> = {}> {
       ) as NativeStylesPropsType<TParams, TTheme, TWithParams>;
       const _styles = getStyles(getStylesConfig);
       const _expandedStyles = (
-        typeof styles === 'function' ? styles(theme) : styles
+        typeof expandedStyles === 'function'
+          ? expandedStyles(theme)
+          : expandedStyles
       ) as Partial<TStyles>;
 
       return React.useMemo(() => {
         // Transform specified 'styles' and 'expandedStyles' into ReactNative StyleSheets
-        const classes: Record<string, ReactNativeStyle[]> = {};
+        const styles: Record<string, ReactNativeStyle[]> = {};
         for (const key of Object.keys(_styles)) {
           // Add 'styles'
-          classes[key] = [
+          styles[key] = [
             typeof _styles[key] !== 'string' // Not emotion style (`/* */`)
               ? css(_styles[key])
               : (_styles[key] as any),
@@ -132,7 +133,7 @@ export class NativeStyleSheet<TTheme extends Record<string, any> = {}> {
 
           // Add 'expandedStyles'
           if (_expandedStyles[key] != null) {
-            classes[key].push(
+            styles[key].push(
               typeof _expandedStyles[key] !== 'string' // Not emotion style (`/* */`)
                 ? css(_expandedStyles[key])
                 : _expandedStyles[key]
@@ -141,7 +142,7 @@ export class NativeStyleSheet<TTheme extends Record<string, any> = {}> {
         }
 
         return {
-          classes,
+          styles,
           theme,
           cx: (...args: any[]) =>
             args.map((value) =>
@@ -226,18 +227,13 @@ type NativeUseStylesConfigType<TStyles extends NativeStylesData, TTheme> = {
   /**
    * Key/Name identifier of the created style sheet.
    *
-   * The here specified name is used to create a readable 'static selector'
-   * for styling with e.g. scss, ..
-   * This class name has initially no styling applied.
-   * e.g. 'prefix-${name}-root' or 'prefix-${name}-container'
-   *
    * @default 'unknown'
    */
   name?: string;
 };
 
 export type StyleItem =
-  | TemplateStringsArray // to do emotion and class name based 'css' styles
+  | TemplateStringsArray // to do emotion based 'css' styles
   | Interpolation<any>; // to do emotion based 'object' styles
 
 type NativeUseStylesReturnType<TStyles extends NativeStylesData, TTheme> = {
@@ -251,7 +247,7 @@ type NativeUseStylesReturnType<TStyles extends NativeStylesData, TTheme> = {
    * React Native Styles keymap based on the styles key map
    * specified in the 'createStyles()' method.
    */
-  classes: MapToX<TStyles, ReactNativeStyle>;
+  styles: MapToX<TStyles, ReactNativeStyle>;
   /**
    * Theme the created stylesheet used.
    */

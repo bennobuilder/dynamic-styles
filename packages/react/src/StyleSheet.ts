@@ -117,7 +117,7 @@ export class StyleSheet<TTheme extends Record<string, any> = {}> {
       ) as UseStylesConfigType<TStyles, TTheme>;
       const _params = (withParams ? paramsOrConfig : undefined) as TParams;
 
-      const styles = _config.styles ?? {};
+      const expandedStyles = _config.styles ?? {};
       const classNames = _config.classNames ?? {};
       const name = _config.name;
 
@@ -143,7 +143,9 @@ export class StyleSheet<TTheme extends Record<string, any> = {}> {
       ) as StylesPropsType<TParams, TTheme, TWithParams>;
       const _styles = getStyles(getStylesConfig);
       const _expandedStyles = (
-        typeof styles === 'function' ? styles(theme) : styles
+        typeof expandedStyles === 'function'
+          ? expandedStyles(theme)
+          : expandedStyles
       ) as Partial<TStyles>;
 
       return React.useMemo(() => {

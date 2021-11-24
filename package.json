@@ -1,6 +1,6 @@
 {
   "name": "dynamic-styles",
-  "version": "0.0.6",
+  "version": "0.0.5",
   "private": true,
   "description": "Dynamic Css-in-Js styles engine, based on Emotion",
   "license": "MIT",

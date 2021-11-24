@@ -1,8 +1,9 @@
 import React from 'react';
-import { Text, View, StyleSheet } from 'react-native';
+import { Text, TouchableOpacity, View } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
 import styleSheet from './src/styles';
 import { css } from '@emotion/native';
+import { getRandomColor } from './src/utils';
 
 const useStyles = styleSheet
   .withParams<{ color: string }>()
@@ -27,8 +28,9 @@ const useStyles = styleSheet
   }));
 
 const App = () => {
-  const { classes } = useStyles(
-    { color: '#61dafb' },
+  const [color, setColor] = React.useState('#61dafb');
+  const { styles } = useStyles(
+    { color: color },
     {
       styles: {
         title: {
@@ -38,38 +40,15 @@ const App = () => {
     }
   );
 
-  // TODO REMOVE
-  console.log({
-    classes,
-    styles,
-  });
-
   return (
-    <View style={classes.container}>
-      <Text style={classes.title}>React Native</Text>
+    <View style={styles.container}>
+      <TouchableOpacity onPress={() => setColor(getRandomColor())}>
+        <Text style={styles.title}>React Native</Text>
+      </TouchableOpacity>
+
       <StatusBar style="auto" />
     </View>
   );
 };
 
 export default App;
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    padding: 24,
-    backgroundColor: '#eaeaea',
-  },
-  title: {
-    marginTop: 16,
-    paddingVertical: 8,
-    borderWidth: 4,
-    borderColor: '#20232a',
-    borderRadius: 6,
-    backgroundColor: '#61dafb',
-    color: '#20232a',
-    textAlign: 'center',
-    fontSize: 30,
-    fontWeight: 'bold',
-  },
-});

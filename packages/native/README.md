@@ -28,10 +28,10 @@ const useStyles = styleSheet.create(({theme, params}) => ({
 const MyComponent = (props) => {
     // Access dynamic styles as class names using the created 'useStyles()' hook 
     // and specify the corresponding parameters
-    const { classes } = useStyles({ color: props.color, fontSize: 10 });
+    const { styles } = useStyles({ color: props.color, fontSize: 10 });
     
     return (
-      <div className={classes.root}>
+      <div style={styles.root}>
           {/* */}
       </div>
     );
