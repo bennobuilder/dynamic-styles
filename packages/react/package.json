@@ -1,0 +1,56 @@
+{
+  "name": "@dyst/react",
+  "version": "0.0.5",
+  "description": "Dynamic Css-in-Js styles engine, based on Emotion for React",
+  "license": "MIT",
+  "homepage": "https://github.com/bennodev19/dynamic-styles",
+  "author": "BennoDev <bennodev19@gmail.com>",
+  "keywords": [
+    "react",
+    "emotion",
+    "emotionjs",
+    "styles",
+    "css",
+    "tss",
+    "jss"
+  ],
+  "main": "dist/index.js",
+  "module": "dist/esm/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "shx rm -rf dist && rollup --c rollup.config.js",
+    "dev:publish": "yalc publish",
+    "dev:push": "yalc push",
+    "watch:push": "tsc-watch --onSuccess \"yarn run dev:push\"",
+    "prepare": "yarn run build",
+    "pack": "npm pack",
+    "test": "jest",
+    "lint": "eslint src/**/*",
+    "install:clean": "shx rm -rf dist && shx rm -rf node_modules && yarn install"
+  },
+  "dependencies": {
+    "clsx": "^1.1.1"
+  },
+  "peerDependencies": {
+    "@emotion/react": "^11.5.0",
+    "react": ">=16.8.0"
+  },
+  "devDependencies": {},
+  "publishConfig": {
+    "access": "public"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/bennodev19/dynamic-styles"
+  },
+  "bugs": {
+    "url": "https://github.com/bennodev19/dynamic-styles/issues"
+  },
+  "files": [
+    "dist",
+    "LICENSE",
+    "README.md",
+    "CHANGELOG.md"
+  ],
+  "sideEffects": false
+}

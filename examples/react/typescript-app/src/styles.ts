@@ -1,4 +1,4 @@
-import { createStyleSheet } from 'dynamic-styles';
+import { createStyleSheet } from '@dyst/react';
 
 export const useTheme = () => {
   return {

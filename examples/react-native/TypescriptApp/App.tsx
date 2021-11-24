@@ -1,37 +1,51 @@
-import { StatusBar } from 'expo-status-bar';
 import React from 'react';
-import { Text, View } from 'react-native';
+import { Text, TouchableOpacity, View } from 'react-native';
+import { StatusBar } from 'expo-status-bar';
 import styleSheet from './src/styles';
 import { css } from '@emotion/native';
-import { css as reactCss } from '@emotion/react';
+import { getRandomColor } from './src/utils';
 
-const useStyles = styleSheet.withParams().create(({ params }) => ({
-  root: {
-    flex: 1,
-    backgroundColor: 'blue',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-}));
+const useStyles = styleSheet
+  .withParams<{ color: string }>()
+  .create(({ params }) => ({
+    container: css`
+      flex: 1;
+      padding: 34px;
+      background-color: #eaeaea;
+    `,
+    title: {
+      marginTop: 16,
+      paddingVertical: 8,
+      borderWidth: 4,
+      borderColor: '#20232a',
+      borderRadius: 6,
+      backgroundColor: params.color,
+      color: '#20232a',
+      textAlign: 'center',
+      fontSize: 30,
+      fontWeight: 'bold',
+    },
+  }));
 
 const App = () => {
-  const { classes } = useStyles({});
-
-  console.log({
-    classes,
-    nativeCss: css`
-      background-color: red;
-      font-weight: bold;
-    `,
-    reactCss: reactCss`
-      background-color: red;
-      font-weight: bold;
-    `,
-  });
+  const [color, setColor] = React.useState('#61dafb');
+  const { styles } = useStyles(
+    { color: color },
+    {
+      styles: {
+        title: {
+          fontSize: 50,
+        },
+      },
+    }
+  );
 
   return (
-    <View>
-      <Text>Open up App.tsx to start working on your app!</Text>
+    <View style={styles.container}>
+      <TouchableOpacity onPress={() => setColor(getRandomColor())}>
+        <Text style={styles.title}>React Native</Text>
+      </TouchableOpacity>
+
       <StatusBar style="auto" />
     </View>
   );

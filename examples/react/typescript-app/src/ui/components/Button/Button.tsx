@@ -1,6 +1,6 @@
 import React from 'react';
 import useStyles, { ExtractedStylesType } from './Button.styles';
-import { useTheme } from '../../../theme';
+import { useTheme } from '../../../styles';
 
 const Button: React.FC<ButtonProps> = (props) => {
   const theme = useTheme();

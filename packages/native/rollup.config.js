@@ -2,7 +2,7 @@ import {
   createCommonJSConfig,
   createDeclarationConfig,
   createESMConfig,
-} from './rollup.config.default';
+} from '../../config/rollup/rollup.config.default';
 
 const packageRoot = process.cwd();
 
