@@ -26,6 +26,10 @@ export class Logger {
     this.log(`${chalk.green(`✅  ${message}`)}`, lineBreakCount);
   }
 
+  warn(message: string, lineBreakCount = 1) {
+    this.log(`${chalk.yellow(`⚠️ ${message}`)}`, lineBreakCount);
+  }
+
   error(message: string, lineBreakCount = 1) {
     this.log(`${chalk.red(`❌  ${message}`)}`, lineBreakCount);
   }

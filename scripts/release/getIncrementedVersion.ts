@@ -71,7 +71,7 @@ const updateStage = (
 export function getIncrementedVersion(
   version: VersionType | string,
   config: GetIncrementedVersionConfig
-) {
+): null | string {
   const type = config.type || 'patch';
   const stage = config.stage || null;
 
@@ -80,7 +80,7 @@ export function getIncrementedVersion(
     logger.error(`Invalid version type '${chalk.cyan(config.type)}' provided, 
     it should be one of these values: ${VERSION_INCREMENT.join(', ')}`);
 
-    process.exit(1);
+    return null;
   }
 
   // Validate stage
@@ -88,7 +88,7 @@ export function getIncrementedVersion(
     logger.error(`Invalid version stage '${chalk.cyan(stage)}' provided, 
     it should be one of these values: ${VERSION_STAGE.join(', ')}`);
 
-    process.exit(1);
+    return null;
   }
 
   // Increment Version

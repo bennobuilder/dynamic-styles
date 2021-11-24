@@ -1,16 +1,3 @@
-### 0.0.5
+# Changelog
 
-- Added `assignRef` method
-
-### 0.0.4
-- Fixed default export
-
-### 0.0.3
-- Added `ref` support
-- small refactoring
-
-### 0.0.2
-- Updated `README`
-
-### 0.0.1
-- Initial release
+See detailed changes in [releases section](https://github.com/bennodev19/dynamic-styles/releases)

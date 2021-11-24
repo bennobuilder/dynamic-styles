@@ -31,20 +31,28 @@ function pkgPublish(pkgManager: 'npm' | 'yarn', config: PkgPublish) {
  *
  * @param config - Configuration object
  */
-export async function publishPackage(config: PublishPackageConfig) {
+export async function publishPackage(
+  config: PublishPackageConfig
+): Promise<boolean> {
   const { path, name, tag, registry = 'https://registry.npmjs.org' } = config;
+
   try {
+    // Publish package
     await pkgPublish('npm', {
       contents: path,
       tag,
       registry: registry,
     });
+
     logger.info(`Package ${chalk.cyan(name)} was published`);
+
+    return true;
   } catch (e: any) {
     logger.error(`Failed to publish package ${chalk.red(name)}`, 2);
     logger.write(chalk.red`${e?.message}\n`);
-    process.exit(1);
   }
+
+  return false;
 }
 
 type PublishPackageConfig = {

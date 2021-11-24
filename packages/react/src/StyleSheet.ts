@@ -1,9 +1,9 @@
 import React from 'react';
-import { CssFactory, CXType } from './CssFactory';
+import { CssFactory, CXType } from './css/CssFactory';
 import { Interpolation } from '@emotion/react';
-import { useGuaranteedMemo } from '../hooks/useGuaranteedMemo';
+import { useGuaranteedMemo } from './hooks/useGuaranteedMemo';
 import createCache, { EmotionCache, Options } from '@emotion/cache';
-import { CacheContext } from '../cache';
+import { CacheContext } from './cache';
 
 export class StyleSheet<TTheme extends Record<string, any> = {}> {
   // Theme the Stylesheet works with
@@ -20,7 +20,7 @@ export class StyleSheet<TTheme extends Record<string, any> = {}> {
    * @param config - Configuration object
    */
   constructor(config: StyleSheetConfig<TTheme> = {}) {
-    this.key = config.key ?? 'ds'; // ds = 'dynamic styles'
+    this.key = config.key ?? 'dyst'; // dyst = 'dynamic styles'
     this.useTheme =
       typeof config.theme !== 'function'
         ? () => config.theme || {}

@@ -14,7 +14,7 @@ export class NativeStyleSheet<TTheme extends Record<string, any> = {}> {
    * @param config - Configuration object
    */
   constructor(config: NativeStyleSheetConfig<TTheme> = {}) {
-    this.key = config.key ?? 'ds'; // ds = 'dynamic styles'
+    this.key = config.key ?? 'dystn'; // dystn = 'dynamic styles native'
     this.useTheme =
       typeof config.theme !== 'function'
         ? () => config.theme || {}
@@ -235,6 +235,10 @@ type NativeUseStylesConfigType<TStyles extends NativeStylesData, TTheme> = {
    */
   name?: string;
 };
+
+export type StyleItem =
+  | TemplateStringsArray // to do emotion and class name based 'css' styles
+  | Interpolation<any>; // to do emotion based 'object' styles
 
 type NativeUseStylesReturnType<TStyles extends NativeStylesData, TTheme> = {
   /**

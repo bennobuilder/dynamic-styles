@@ -19,8 +19,9 @@ async function writeVersionToPkgJson(filePath: string, version: string) {
  *
  * @param version - Version to be set.
  */
-export async function updatePackagesVersion(version: string) {
+export async function updatePackagesVersion(version: string): Promise<boolean> {
   const rootPath = await getRootPkgJsonDir();
+  if (!rootPath) return false;
 
   // Update version in root 'package.json'
   await writeVersionToPkgJson(path.join(rootPath, '/package.json'), version);
@@ -35,4 +36,6 @@ export async function updatePackagesVersion(version: string) {
       writeVersionToPkgJson(path.join(src, folder, '/package.json'), version)
     )
   );
+
+  return true;
 }

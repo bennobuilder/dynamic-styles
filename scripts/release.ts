@@ -18,6 +18,7 @@ import { checkAuth } from './release/checkAuth';
 
 const logger = new Logger('release');
 const git = simpleGit();
+const publishBranches = ['master'];
 
 const { argv } = yargs(hideBin(process.argv))
   .option('stage', {
@@ -30,29 +31,35 @@ const { argv } = yargs(hideBin(process.argv))
     default: 'latest',
     description: 'Publish under a given dist-tag.',
   })
+  .option('skip-master-check', {
+    type: 'boolean',
+    default: false,
+    description: "Whether to skip the check if you are on the 'master' branch.",
+  })
   .option('skip-version-check', {
     type: 'boolean',
     default: false,
-    description: 'Whether to skip checking version.',
+    description: 'Whether to skip incrementing the version of all packages.',
   })
   .option('skip-build', {
     type: 'boolean',
     default: false,
-    description: 'Whether to skip building step.',
+    description: 'Whether to skip building all packages.',
   })
   .option('skip-publish', {
     type: 'boolean',
     default: false,
-    description: 'Whether to skip publishing step.',
+    description: 'Whether to skip publishing all packages.',
   })
   .example([
     ['$0 minor --skip-build', 'Release but skip building packages.'],
     ['$0 minor --alpha', 'Prerelease to alpha stage.'],
   ]);
 
-// Async wrapper method to use 'await'
+// Async wrapper method to use the modern 'await'
 (async () => {
   const packages = await getPackagesList();
+  const status = await git.status();
 
   logger.info(
     `Releasing all packages: ${packages
@@ -60,17 +67,39 @@ const { argv } = yargs(hideBin(process.argv))
       .join(', ')}`
   );
 
-  // Increment Version
+  // Check if you are on the 'master' branch
+  if (!publishBranches.includes(status.current || '')) {
+    if (!argv['skip-master-check']) {
+      logger.error(
+        `Rejected: You are not on a valid release branch! Valid release branches: ${chalk.magenta(
+          publishBranches.join(', ')
+        )}`
+      );
+      process.exit(1);
+    } else {
+      logger.warn(
+        `Note: You are not on a valid release branch! Valid release branches: ${chalk.magenta(
+          publishBranches.join(', ')
+        )}`
+      );
+    }
+  }
+
+  // Increment package versions
   let packageVersion = mainPackageJson.version;
   if (!argv['skip-version-check']) {
+    // Get new version
     packageVersion =
       getIncrementedVersion(packageVersion, {
         type: argv._[0] as any,
         stage: argv.stage as any,
       }) || packageVersion;
+    if (packageVersion == null) process.exit(1);
+
     logger.info(`New version: ${chalk.cyan(packageVersion)}`);
 
-    await updatePackagesVersion(packageVersion);
+    // Update Package versions
+    if (!(await updatePackagesVersion(packageVersion))) process.exit(1);
   }
 
   // Build packages
@@ -79,6 +108,7 @@ const { argv } = yargs(hideBin(process.argv))
     logger.info(`Building packages`);
 
     await execa('yarn', ['build']);
+
     logger.success(
       `All packages build successfully in ${chalk.magenta(
         `${((Date.now() - startTime) / 1000).toFixed(2)}s`
@@ -114,10 +144,11 @@ const { argv } = yargs(hideBin(process.argv))
     );
   }
 
-  // Git
+  // Push release changes to Git
   await git.commit(`[release] Version: ${packageVersion}`);
   await git.push();
 
+  // Open Github release
   open(
     githubRelease({
       user: 'bennodev19',

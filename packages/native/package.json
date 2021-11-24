@@ -1,6 +1,6 @@
 {
   "name": "@dyst/native",
-  "version": "0.0.3",
+  "version": "0.0.6",
   "description": "Dynamic Css-in-Js styles engine, based on Emotion for React-Native",
   "license": "MIT",
   "homepage": "https://github.com/bennodev19/dynamic-styles",

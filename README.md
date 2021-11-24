@@ -65,7 +65,7 @@ In the configuration object that the `createStylesheet()` method takes up,
 we can specify our application's current *theme*.
 We can easily access this theme in the stylesheets we create later.
 ```ts
-import { createStyleSheet } from 'dynamic-styles';
+import { createStyleSheet } from '@dyst/react';
 
 // Initialization of a StyleSheet instance called 'styleSheet'
 export const styleSheet = createStyleSheet({
@@ -220,7 +220,7 @@ Thus, we would have to specify it manually (e.g. `create<ParamsType, StyleSheetT
 ```ts
 import React from "react";
 import { css } from "@emotion/react";
-import { StyleItem } from "dynamic-styles";
+import { StyleItem } from "@dyst/react";
 import { styleSheet } from "./styles";
 
 type DemoStyles = {
@@ -430,7 +430,7 @@ Sometimes we might want to insert `global css` styles.
 We can use the `<GlobalStyles />` component to do this.
 ```jsx
 import React from "react";
-import { GlobalStyles } from "dynamic-styles";
+import { GlobalStyles } from "@dyst/react";
 import { useTheme } from "./useTheme";
 
 const App = () => {
@@ -470,7 +470,7 @@ and in line with modern standards.
 The `NormalizeCss` Component sets the normalized styles 
 specified in [normalize.css](https://necolas.github.io/normalize.css/) globally.
 ```jsx
-import { NormalizeCSS } from "dynamic-styles";
+import { NormalizeCSS } from "@dyst/react";
 
 const App = () => {
     return (
@@ -498,7 +498,7 @@ Here we create a reusable Button that can be styled
 via inline styles using the `styles` property.
 ```tsx
 import React from "react";
-import { UseStylesExtractStylesType } from "dynamic-styles";
+import { UseStylesExtractStylesType } from "@dyst/react";
 import { styleSheet } from "../styles";
 
 const useStyles = styleSheet

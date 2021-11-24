@@ -8,13 +8,13 @@
     "ios": "expo start --ios",
     "web": "expo start --web",
     "eject": "expo eject",
-    "install:dev:dynamic-styles": "yalc add dynamic-styles && yarn install",
-    "install:prod:dynamic-styles": "yarn add dynamic-styles && yarn install"
+    "install:dev:dyst": "yalc add @dyst/native && yarn install",
+    "install:prod:dyst": "yarn add @dyst/native && yarn install"
   },
   "dependencies": {
+    "@dyst/native": "file:.yalc/@dyst/native",
     "@emotion/native": "^11.0.0",
     "@emotion/react": "^11.6.0",
-    "dynamic-styles": "file:.yalc/dynamic-styles",
     "expo": "~43.0.2",
     "expo-status-bar": "~1.1.0",
     "react": "17.0.1",
