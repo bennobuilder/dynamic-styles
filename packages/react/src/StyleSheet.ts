@@ -1,9 +1,9 @@
 import React from 'react';
-import { CssFactory, CXType } from './CssFactory';
-import { Interpolation, SerializedStyles } from '@emotion/react';
-import { useGuaranteedMemo } from '../hooks/useGuaranteedMemo';
+import { CssFactory, CXType } from './css/CssFactory';
+import { Interpolation } from '@emotion/react';
+import { useGuaranteedMemo } from './hooks/useGuaranteedMemo';
 import createCache, { EmotionCache, Options } from '@emotion/cache';
-import { CacheContext } from '../components';
+import { CacheContext } from './cache';
 
 export class StyleSheet<TTheme extends Record<string, any> = {}> {
   // Theme the Stylesheet works with
@@ -20,7 +20,7 @@ export class StyleSheet<TTheme extends Record<string, any> = {}> {
    * @param config - Configuration object
    */
   constructor(config: StyleSheetConfig<TTheme> = {}) {
-    this.key = config.key ?? 'ds'; // ds = 'dynamic styles'
+    this.key = config.key ?? 'dyst'; // dyst = 'dynamic styles'
     this.useTheme =
       typeof config.theme !== 'function'
         ? () => config.theme || {}
@@ -117,7 +117,7 @@ export class StyleSheet<TTheme extends Record<string, any> = {}> {
       ) as UseStylesConfigType<TStyles, TTheme>;
       const _params = (withParams ? paramsOrConfig : undefined) as TParams;
 
-      const styles = _config.styles ?? {};
+      const expandedStyles = _config.styles ?? {};
       const classNames = _config.classNames ?? {};
       const name = _config.name;
 
@@ -143,7 +143,9 @@ export class StyleSheet<TTheme extends Record<string, any> = {}> {
       ) as StylesPropsType<TParams, TTheme, TWithParams>;
       const _styles = getStyles(getStylesConfig);
       const _expandedStyles = (
-        typeof styles === 'function' ? styles(theme) : styles
+        typeof expandedStyles === 'function'
+          ? expandedStyles(theme)
+          : expandedStyles
       ) as Partial<TStyles>;
 
       return React.useMemo(() => {
@@ -151,7 +153,7 @@ export class StyleSheet<TTheme extends Record<string, any> = {}> {
         const classes: Record<string, string> = {};
         for (const key of Object.keys(_styles)) {
           classes[key] =
-            typeof _styles[key] !== 'string'
+            typeof _styles[key] !== 'string' // Not 'class name' and emotion style (`/* */`)
               ? css(_styles[key])
               : (_styles[key] as any);
         }
@@ -160,7 +162,7 @@ export class StyleSheet<TTheme extends Record<string, any> = {}> {
         const expandedClasses: Record<string, string> = {};
         for (const key of Object.keys(_expandedStyles)) {
           expandedClasses[key] = cx(
-            typeof _expandedStyles[key] !== 'string'
+            typeof _expandedStyles[key] !== 'string' // Not 'class name' and emotion style (`/* */`)
               ? css(_expandedStyles[key])
               : _expandedStyles[key],
             classNames
@@ -257,8 +259,7 @@ export type StyleSheetConfig<TTheme> = {
 };
 
 export type StyleItem =
-  | SerializedStyles // to do emotion based 'css' styles
-  | TemplateStringsArray // to do class name based styles
+  | TemplateStringsArray // to do emotion and class name based 'css' styles
   | Interpolation<any>; // to do emotion based 'object' styles
 
 export type StylesData = Record<string, StyleItem>;
@@ -369,6 +370,6 @@ export type UseStylesExtractStylesType<T> = T extends UseStylesType<
   ? ExpandedStylesType<TStyles, TTheme>
   : never;
 
-export type MapToX<T, X = any> = {
+type MapToX<T, X = any> = {
   [K in keyof T]: X;
 };

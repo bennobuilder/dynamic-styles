@@ -1,8 +1,11 @@
 import { StyleSheet, StyleSheetConfig } from './StyleSheet';
 
+export * from './css';
+export * from './cache';
 export * from './StyleSheet';
 
-export default StyleSheet;
+// Reexport from @emotion/react
+export { keyframes } from '@emotion/react';
 
 /**
  * Instantiates a new `StyleSheet` instance.
@@ -15,3 +18,5 @@ export function createStyleSheet<TTheme extends Record<string, any> = {}>(
 ) {
   return new StyleSheet<TTheme>(config);
 }
+
+export default StyleSheet;

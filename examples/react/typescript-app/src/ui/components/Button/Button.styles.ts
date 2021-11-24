@@ -1,5 +1,5 @@
 import styleSheet from '../../../styles';
-import { UseStylesExtractStylesType } from 'dynamic-styles';
+import { UseStylesExtractStylesType } from '@dyst/react';
 
 const useStyles = styleSheet
   .withParams<ButtonStyles>()

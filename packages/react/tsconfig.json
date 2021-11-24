@@ -1,0 +1,12 @@
+{
+  "extends": "../../config/types/tsconfig.default.json",
+  "compilerOptions": {
+    "target": "esnext",
+    "outDir": "dist",
+    "rootDir": "src",
+    "jsx": "react"
+  },
+  "include": [
+    "./src/**/*" // Only include what is in src (-> dist, tests, .. will be excluded)
+  ]
+}

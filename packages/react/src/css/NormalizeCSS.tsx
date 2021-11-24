@@ -1,5 +1,5 @@
 import React from 'react';
-import GlobalStyles from './GlobalStyles';
+import GlobalStyles from '../GlobalStyles';
 import { css } from '@emotion/react';
 
 // Based on https://necolas.github.io/normalize.css/

@@ -5,9 +5,9 @@
     <i>✨ Dynamic Css-in-Js styles engine, based on <a href="https://emotion.sh/">Emotion<a/></i>
     <br>
     <br>
-    <img src="https://img.shields.io/bundlephobia/minzip/dynamic-styles">
-    <img src="https://img.shields.io/npm/dw/dynamic-styles">
-    <img src="https://img.shields.io/npm/l/dynamic-styles">
+    <img src="https://img.shields.io/bundlephobia/minzip/@dyst/react.svg?label=@dyst/react%20size" alt="npm minified zip size">
+    <img src="https://img.shields.io/npm/dw/@dyst/react.svg?label=@dyst/react%20downloads">
+    <img src="https://img.shields.io/github/license/bennodev19/dynamic-styles" alt="GitHub License">
 </div>
 
 ---
@@ -43,15 +43,17 @@ const MyComponent = (props) => {
 ### 💻 Installation
 
 ```bash
-$ yarn add dynamic-styles @emotion/react
-# or
-$ npm install dynamic-styles @emotion/react
+# React
+$ npm install @dyst/react @emotion/react
+
+# React Native
+$ npm install @dyst/native @emotion/react @emotion/native
 ```
 
 ### ⛳️ Code Sandbox
 - [React Javascript](https://codesandbox.io/s/ds-basic-usage-js-nk55r)
 - [React Typescript](https://codesandbox.io/s/ds-basic-usage-ts-b25id)
-- [⚠️ **Not supported, yet**] [React-Native Javascript](https://snack.expo.dev/@bennodev/ds-basic-usage-js)
+- [React-Native Javascript](https://snack.expo.dev/@bennodev/ds-basic-usage-js)
 
 ## 🪁 Basic usage
 
@@ -63,7 +65,7 @@ In the configuration object that the `createStylesheet()` method takes up,
 we can specify our application's current *theme*.
 We can easily access this theme in the stylesheets we create later.
 ```ts
-import { createStyleSheet } from 'dynamic-styles';
+import { createStyleSheet } from '@dyst/react';
 
 // Initialization of a StyleSheet instance called 'styleSheet'
 export const styleSheet = createStyleSheet({
@@ -131,6 +133,7 @@ const Demo = (props) => {
 [Live Demo](https://codesandbox.io/s/ds-basic-usage-js-nk55r)
 
 ## 🔗 Classes merging with `cx()`
+> `@dyst/react`
 
 To merge class names, we should use the `cx()` method returned by `useStyles()`.
 It has the same API as the popular [clsx](https://www.npmjs.com/package/clsx) package
@@ -194,6 +197,7 @@ const Demo = () => {
 [Live Demo](https://codesandbox.io/s/ds-class-merging-js-72de4)
 
 ## 🟦 Typescript
+> `@dyst/react`, `@dyst/native`
 
 The `dynamic-styles` API is fully type-safe.
 Let's take a look at the [Basic usage](#-basic-usage) example converted to Typescript (see below).
@@ -216,7 +220,7 @@ Thus, we would have to specify it manually (e.g. `create<ParamsType, StyleSheetT
 ```ts
 import React from "react";
 import { css } from "@emotion/react";
-import { StyleItem } from "dynamic-styles";
+import { StyleItem } from "@dyst/react";
 import { styleSheet } from "./styles";
 
 type DemoStyles = {
@@ -302,6 +306,7 @@ const Demo: React.FC<DemoProps> = (props) => {
 [Live Demo](https://codesandbox.io/s/ds-basic-usage-ts-b25id)
 
 ## ⚗️ Composition and nested selectors
+> `@dyst/react`
 
 To use a selector (e.g. `button` styles) in other parts of the stylesheet,
 we need to create a reference to it.
@@ -373,6 +378,7 @@ const Demo = () => {
 [Live Demo](https://codesandbox.io/s/ds-composition-and-nested-selectors-js-m5wcb)
 
 ## 🎥 Keyframes
+> `@dyst/react`, `@dyst/native`
 
 We can define animations using the [`keyframes`](https://emotion.sh/docs/keyframes#gatsby-focus-wrapper) helper from `@emotion/react`. 
 `keyframes` takes in a *css keyframe* definition 
@@ -418,12 +424,13 @@ const Demo = () => {
 [Live Demo](https://codesandbox.io/s/ds-keyframes-js-vnoqw)
 
 ## 🌍 Global styles
+> `@dyst/react`, `@dyst/native`
 
 Sometimes we might want to insert `global css` styles. 
 We can use the `<GlobalStyles />` component to do this.
 ```jsx
 import React from "react";
-import { GlobalStyles } from "dynamic-styles";
+import { GlobalStyles } from "@dyst/react";
 import { useTheme } from "./useTheme";
 
 const App = () => {
@@ -455,6 +462,7 @@ const App = () => {
 [Live Demo](https://codesandbox.io/s/ds-global-styles-js-sncu4)
 
 ## 🌈 `normalize.css`
+> `@dyst/react`
 
 In a web environment it is often necessary to 'normalize' the `css`,
 which makes the browsers render all elements more consistently 
@@ -462,7 +470,7 @@ and in line with modern standards.
 The `NormalizeCss` Component sets the normalized styles 
 specified in [normalize.css](https://necolas.github.io/normalize.css/) globally.
 ```jsx
-import { NormalizeCSS } from "dynamic-styles";
+import { NormalizeCSS } from "@dyst/react";
 
 const App = () => {
     return (
@@ -476,6 +484,7 @@ const App = () => {
 [Live Demo](https://codesandbox.io/s/ds-normalize-css-js-fzhof)
 
 ## ✍️ Inline styles
+> `@dyst/react`, `@dyst/native`
 
 Often we need to create reusable Components
 that should be customizable later on, among other things with inline styles.
@@ -489,7 +498,7 @@ Here we create a reusable Button that can be styled
 via inline styles using the `styles` property.
 ```tsx
 import React from "react";
-import { UseStylesExtractStylesType } from "dynamic-styles";
+import { UseStylesExtractStylesType } from "@dyst/react";
 import { styleSheet } from "../styles";
 
 const useStyles = styleSheet
