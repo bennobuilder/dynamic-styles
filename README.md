@@ -5,9 +5,9 @@
     <i>✨ Dynamic Css-in-Js styles engine, based on <a href="https://emotion.sh/">Emotion<a/></i>
     <br>
     <br>
-    <img src="https://img.shields.io/bundlephobia/minzip/dynamic-styles">
-    <img src="https://img.shields.io/npm/dw/dynamic-styles">
-    <img src="https://img.shields.io/npm/l/dynamic-styles">
+    <img src="https://img.shields.io/bundlephobia/minzip/@dyst/react.svg?label=@dyst/react%20size" alt="npm minified zip size">
+    <img src="https://img.shields.io/npm/dw/@dyst/react.svg?label=@dyst/react%20downloads">
+    <img src="https://img.shields.io/github/license/bennodev19/dynamic-styles" alt="GitHub License">
 </div>
 
 ---
@@ -44,10 +44,10 @@ const MyComponent = (props) => {
 
 ```bash
 # React
-$ yarn add @dyst/react @emotion/react
+$ npm install @dyst/react @emotion/react
 
 # React Native
-$ npm install @dyst/native @emotion/react
+$ npm install @dyst/native @emotion/react @emotion/native
 ```
 
 ### ⛳️ Code Sandbox
