@@ -1,3 +1,5 @@
+> This project has no known bugs but isn't activliy maintained. Checkout [tss-react](https://github.com/garronej/tss-react) for a more future safe & bulletproof library with similar features and API 🙌 ([See](https://github.com/bennodev19/dynamic-styles/discussions/10#discussioncomment-6758204))
+
 # 🏃‍♀ Dynamic Styles
 
 <img src="https://raw.githubusercontent.com/bennodev19/dynamic-styles/master/static/banner.png" alt="Banner">
